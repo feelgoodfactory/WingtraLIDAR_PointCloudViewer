@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WingtraLIDAR PointCLOUD Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ci: #F46F29;
+    --ci-dim: rgba(244,111,41,0.15);
+    --ci-glow: rgba(244,111,41,0.4);
+    --bg: #080809;
+    --surface: #0f1012;
+    --surface2: #161719;
+    --surface3: #1e2022;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.14);
+    --text: #e8e8ea;
+    --text-dim: rgba(232,232,234,0.45);
+    --text-muted: rgba(232,232,234,0.25);
+    --green: #3fcf8e;
+  }
+
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  #app { display: flex; flex-direction: column; height: 100vh; }
+
+  /* ── TOP BAR ─────────────────────────────── */
+  #topbar {
+    flex-shrink: 0; height: 52px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 20px; gap: 16px;
+    position: relative; z-index: 10;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px; background: var(--ci);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 50%, 80% 100%, 20% 100%, 0% 50%);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .logo-mark svg { width: 16px; height: 16px; }
+
+  .brand { display: flex; flex-direction: column; line-height: 1; }
+  .brand-top {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ci);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .brand-bottom {
+    font-size: 17px; font-weight: 700; letter-spacing: 0.04em; color: var(--text);
+  }
+
+  .topbar-sep { width: 1px; height: 28px; background: var(--border); }
+
+  #file-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
+    letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; max-width: 300px;
+  }
+
+  .topbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  #status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-muted); transition: background 0.3s;
+  }
+  #status-dot.active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  #status-dot.loading { background: var(--ci); box-shadow: 0 0 6px var(--ci); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  #status-label {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim); letter-spacing: 0.05em;
+  }
+
+  /* ── MAIN ────────────────────────────────── */
+  #main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ── SIDEBAR ─────────────────────────────── */
+  #sidebar {
+    width: 260px; flex-shrink: 0;
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto; overflow-x: hidden;
+  }
+
+  .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+
+  .section-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ci);
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 12px;
+  }
+
+  /* ── DROP ZONE ───────────────────────────── */
+  #drop-zone {
+    border: 1px dashed rgba(244,111,41,0.4); border-radius: 6px;
+    padding: 28px 16px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--ci-dim); position: relative;
+  }
+  #drop-zone:hover, #drop-zone.drag-over {
+    border-color: var(--ci); background: rgba(244,111,41,0.22);
+  }
+  #drop-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .drop-icon { width: 36px; height: 36px; margin: 0 auto 10px; opacity: 0.7; }
+  .drop-title { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: var(--text); }
+  .drop-hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ── PROGRESS ────────────────────────────── */
+  #progress-wrap { display: none; margin-top: 12px; }
+  .progress-bar-track { height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--ci); width: 0%; transition: width 0.15s; border-radius: 2px; }
+  .progress-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 5px; text-align: center; }
+
+  /* ── STATS ───────────────────────────────── */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; }
+  .stat-cell.full { grid-column: 1/-1; }
+  .stat-key { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 3px; }
+  .stat-val { font-size: 13px; font-weight: 600; color: var(--ci); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+  .stat-val.white { color: var(--text); }
+
+  /* ── CONTROLS ────────────────────────────── */
+  .ctrl-group { margin-bottom: 14px; }
+  .ctrl-group:last-child { margin-bottom: 0; }
+  .ctrl-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; display: block; }
+
+  .mode-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .mode-btn {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text-dim); font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 7px 6px; cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .mode-btn:hover { border-color: var(--border-bright); color: var(--text); }
+  .mode-btn.active { background: var(--ci-dim); border-color: var(--ci); color: var(--ci); }
+  .mode-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+  /* Slider */
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 3px;
+    background: var(--surface3); border-radius: 2px; outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--ci); cursor: pointer;
+    border: 2px solid var(--bg); box-shadow: 0 0 6px var(--ci-glow);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--ci); cursor: pointer; border: 2px solid var(--bg);
+  }
+  .slider-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ci); width: 36px; text-align: right; }
+
+  /* ── JET COLOR RANGE ─────────────────────── */
+  .jet-bar-wrap { margin-bottom: 12px; position: relative; }
+  .jet-bar {
+    height: 8px; border-radius: 4px;
+    background: linear-gradient(to right,
+      #0000bf 0%, #0040ff 12%, #00bfff 25%, #00ffbf 38%,
+      #40ff80 50%, #bfff00 62%, #ffbf00 75%, #ff4000 88%, #bf0000 100%);
+  }
+  /* ticks showing the current window */
+  .jet-bar-clip {
+    position: absolute; top: 0; height: 8px; border-radius: 4px;
+    background: rgba(8,8,9,0.7);
+    pointer-events: none;
+    transition: width 0.1s, left 0.1s;
+  }
+
+  .range-row { margin-bottom: 10px; }
+  .range-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .range-key { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+  .range-val { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--ci); }
+
+  .range-abs-row { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
+
+  /* ── TOGGLE SWITCH ───────────────────────── */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+  .toggle-label-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
+  .toggle-switch { position: relative; width: 38px; height: 22px; cursor: pointer; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-track {
+    position: absolute; inset: 0; background: var(--surface3);
+    border-radius: 11px; border: 1px solid var(--border-bright);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .toggle-track::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--text-muted); transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-track { background: var(--ci-dim); border-color: var(--ci); }
+  .toggle-switch input:checked + .toggle-track::after {
+    transform: translateX(16px); background: var(--ci);
+    box-shadow: 0 0 6px var(--ci-glow);
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%; padding: 9px 14px;
+    background: var(--surface2); border: 1px solid var(--border-bright);
+    border-radius: 4px; color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    margin-bottom: 6px;
+  }
+  .btn:hover { border-color: var(--ci); color: var(--ci); background: var(--ci-dim); }
+  .btn:last-child { margin-bottom: 0; }
+
+  /* ── CANVAS AREA ─────────────────────────── */
+  #canvas-wrap { flex: 1; position: relative; overflow: hidden; }
+  #canvas-wrap canvas { display: block; }
+
+  #empty-state {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; pointer-events: none;
+  }
+  .empty-graphic { width: 120px; height: 120px; margin-bottom: 24px; opacity: 0.12; }
+  .empty-title { font-size: 22px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
+  .empty-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+
+  #hud-tl { position: absolute; top: 14px; left: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(244,111,41,0.6); letter-spacing: 0.05em; pointer-events: none; line-height: 1.7; }
+  #hud-br { position: absolute; bottom: 14px; right: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; pointer-events: none; text-align: right; line-height: 1.8; }
+
+  /* Legend */
+  #legend { position: absolute; bottom: 14px; left: 14px; display: none; pointer-events: none; }
+  .legend-inner { display: flex; align-items: stretch; }
+  .legend-bar { width: 16px; height: 120px; border-radius: 3px; border: 1px solid var(--border); }
+  .legend-labels { margin-left: 8px; display: flex; flex-direction: column; justify-content: space-between; height: 120px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); }
+
+  /* ── SLICE TRACK ─────────────────────────── */
+  .slice-track-wrap { position: relative; height: 20px; margin: 10px 0 6px; }
+  .slice-track-bg {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 100%; height: 4px; border-radius: 2px;
+    background: var(--surface3);
+  }
+  .slice-track-fill {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    height: 4px; border-radius: 2px;
+    background: var(--ci); opacity: 0.7;
+    transition: left 0.08s, width 0.08s;
+  }
+  .slice-abs-row {
+    display: flex; justify-content: space-between;
+    font-size: 9px; color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace; margin-top: 4px;
+  }
+
+  /* scrollbar */
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 2L13 5.5V10.5L8 14L3 10.5V5.5L8 2Z" stroke="white" stroke-width="1.5" fill="none"/>
+        <circle cx="8" cy="8" r="2" fill="white"/>
+      </svg>
+    </div>
+    <div class="brand">
+      <span class="brand-top">Wingtra</span>
+      <span class="brand-bottom">LIDAR PointCLOUD Viewer</span>
+    </div>
+    <div class="topbar-sep"></div>
+    <span id="file-badge">No file loaded</span>
+    <div class="topbar-right">
+      <div id="status-dot"></div>
+      <span id="status-label">IDLE</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+
+      <!-- FILE -->
+      <div class="sidebar-section">
+        <div class="section-label">Data Source</div>
+        <div id="drop-zone">
+          <input type="file" id="file-input" accept=".las">
+          <svg class="drop-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 4L32 12V24L18 32L4 24V12L18 4Z" stroke="#F46F29" stroke-width="1.5" fill="rgba(244,111,41,0.08)"/>
+            <path d="M12 18H24M18 12V24" stroke="#F46F29" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="drop-title">Drop .LAS File Here</div>
+          <div class="drop-hint">or click to browse</div>
+        </div>
+        <div id="progress-wrap">
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+          <div class="progress-label" id="progress-label">Parsing…</div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="sidebar-section">
+        <div class="section-label">File Stats</div>
+        <div class="stat-grid">
+          <div class="stat-cell full">
+            <div class="stat-key">Points Rendered</div>
+            <div class="stat-val" id="stat-points">—</div>
+          </div>
+          <div class="stat-cell full">
+            <div class="stat-key">Z Range (m)</div>
+            <div class="stat-val white" id="stat-z">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLOR MODE -->
+      <div class="sidebar-section">
+        <div class="section-label">Color Mode</div>
+        <div class="mode-buttons">
+          <button class="mode-btn active" data-mode="elevation">Elevation</button>
+          <button class="mode-btn disabled" id="btn-rgb" data-mode="rgb">RGB</button>
+        </div>
+      </div>
+
+      <!-- JET COLOR RANGE -->
+      <div class="sidebar-section" id="jet-range-section">
+        <div class="section-label">Jet Color Range</div>
+
+        <!-- Jet gradient preview with active-window overlay -->
+        <div class="jet-bar-wrap">
+          <div class="jet-bar"></div>
+          <div class="jet-bar-clip" id="clip-left"  style="left:0;width:0%"></div>
+          <div class="jet-bar-clip" id="clip-right" style="right:0;width:0%"></div>
+        </div>
+
+        <div class="range-row">
+          <div class="range-header">
+            <span class="range-key">Min</span>
+            <span class="range-val" id="range-min-val">0%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="range-min" min="0" max="98" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="range-row">
+          <div class="range-header">
+            <span class="range-key">Max</span>
+            <span class="range-val" id="range-max-val">100%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="range-max" min="2" max="100" step="1" value="100">
+          </div>
+        </div>
+
+        <div class="range-abs-row">
+          <span id="range-abs-min">—</span>
+          <span id="range-abs-max">—</span>
+        </div>
+      </div>
+
+      <!-- DISPLAY -->
+      <div class="sidebar-section">
+        <div class="section-label">Display</div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Point Size</span>
+          <div class="slider-row">
+            <input type="range" id="size-slider" min="0.5" max="6" step="0.5" value="2">
+            <span class="slider-val" id="size-val">2</span>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Brightness</span>
+          <div class="slider-row">
+            <input type="range" id="bright-slider" min="0.3" max="2.5" step="0.1" value="1">
+            <span class="slider-val" id="bright-val">1.0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERTICAL SLICE -->
+      <div class="sidebar-section" id="slice-section">
+        <div class="section-label">Vertical Slice</div>
+
+        <!-- Axis selector -->
+        <div class="ctrl-group">
+          <div class="mode-buttons">
+            <button class="mode-btn active" data-axis="x">X Axis</button>
+            <button class="mode-btn" data-axis="y">Y Axis</button>
+          </div>
+        </div>
+
+        <!-- Track preview -->
+        <div class="slice-track-wrap">
+          <div class="slice-track-bg"></div>
+          <div class="slice-track-fill" id="slice-track-fill"></div>
+        </div>
+
+        <div class="range-row">
+          <div class="range-header">
+            <span class="range-key">Near</span>
+            <span class="range-val" id="slice-near-val">0%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="slice-near" min="0" max="98" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="range-row" style="margin-top:8px;">
+          <div class="range-header">
+            <span class="range-key">Far</span>
+            <span class="range-val" id="slice-far-val">100%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="slice-far" min="2" max="100" step="1" value="100">
+          </div>
+        </div>
+
+        <div class="slice-abs-row">
+          <span id="slice-abs-near">—</span>
+          <span id="slice-abs-far">—</span>
+        </div>
+      </div>
+
+      <!-- CAMERA -->
+      <div class="sidebar-section">
+        <div class="section-label">Camera</div>
+        <div class="ctrl-group">
+          <div class="toggle-row">
+            <span class="toggle-label-text">Auto-Rotate</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="auto-rotate-toggle" checked>
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+        </div>
+        <button class="btn" id="btn-reset">↺ Reset View</button>
+        <button class="btn" id="btn-top">⊞ Top View</button>
+        <button class="btn" id="btn-side">◫ Side View</button>
+        <button class="btn" id="btn-fit">⤢ Fit to View</button>
+      </div>
+
+      <!-- CLASS LEGEND -->
+      <div class="sidebar-section" id="class-legend" style="display:none;">
+        <div class="section-label">Classes</div>
+        <div id="class-legend-items"></div>
+      </div>
+
+    </div>
+
+    <!-- CANVAS -->
+    <div id="canvas-wrap">
+      <div id="empty-state">
+        <svg class="empty-graphic" viewBox="0 0 120 120" fill="none">
+          <path d="M60 10L110 37.5V82.5L60 110L10 82.5V37.5L60 10Z" stroke="white" stroke-width="2"/>
+          <circle cx="40" cy="50" r="3" fill="white" opacity="0.6"/>
+          <circle cx="70" cy="35" r="2" fill="white" opacity="0.5"/>
+          <circle cx="85" cy="60" r="3" fill="white" opacity="0.7"/>
+          <circle cx="55" cy="75" r="2" fill="white" opacity="0.5"/>
+          <circle cx="30" cy="70" r="2.5" fill="white" opacity="0.6"/>
+          <circle cx="90" cy="80" r="2" fill="white" opacity="0.4"/>
+          <circle cx="60" cy="55" r="3.5" fill="white" opacity="0.8"/>
+          <circle cx="45" cy="90" r="2" fill="white" opacity="0.5"/>
+        </svg>
+        <div class="empty-title">No Point Cloud Loaded</div>
+        <div class="empty-sub">Upload a .LAS file to begin</div>
+      </div>
+
+      <div id="hud-tl"></div>
+      <div id="hud-br">LMB ROTATE &nbsp;·&nbsp; RMB PAN &nbsp;·&nbsp; SCROLL ZOOM</div>
+
+      <div id="legend">
+        <div class="legend-inner">
+          <canvas class="legend-bar" id="legend-canvas" width="16" height="120"></canvas>
+          <div class="legend-labels">
+            <span id="legend-max">—</span>
+            <span id="legend-mid">—</span>
+            <span id="legend-min">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────
+//  JET COLORMAP
+// ─────────────────────────────────────────────────
+function jetColor(t) {
+  const r = Math.max(0, Math.min(1, 1.5 - Math.abs(4*t - 3)));
+  const g = Math.max(0, Math.min(1, 1.5 - Math.abs(4*t - 2)));
+  const b = Math.max(0, Math.min(1, 1.5 - Math.abs(4*t - 1)));
+  return [r, g, b];
+}
+
+const CLASS_COLORS = {
+  0:[0.5,0.5,0.5],1:[0.55,0.55,0.55],2:[0.55,0.38,0.18],3:[0.53,0.75,0.35],
+  4:[0.27,0.62,0.2],5:[0.08,0.42,0.08],6:[0.88,0.22,0.2],7:[0.25,0.25,0.25],
+  9:[0.16,0.52,0.87],17:[0.85,0.65,0.65],18:[0.85,0.2,0.85],
+};
+const CLASS_NAMES = {0:'Never Classified',1:'Unclassified',2:'Ground',3:'Low Veg.',4:'Med. Veg.',5:'High Veg.',6:'Building',7:'Low Point',9:'Water',17:'Bridge',18:'High Noise'};
+const DEFAULT_CLASS_COLOR = [0.4,0.4,0.4];
+
+// ─────────────────────────────────────────────────
+//  LAS PARSER
+// ─────────────────────────────────────────────────
+function parseLAS(buffer) {
+  const view = new DataView(buffer);
+  const sig = String.fromCharCode(view.getUint8(0),view.getUint8(1),view.getUint8(2),view.getUint8(3));
+  if (sig !== 'LASF') throw new Error('Invalid LAS file: missing LASF signature.');
+
+  const verMaj = view.getUint8(24), verMin = view.getUint8(25);
+  const offsetToData = view.getUint32(96, true);
+  const pointFormat  = view.getUint8(104);
+  const pointRecLen  = view.getUint16(105, true);
+
+  let numPoints = view.getUint32(107, true);
+  if (numPoints === 0 && verMaj === 1 && verMin >= 4) {
+    try { numPoints = view.getUint32(247, true); } catch(e) {}
+  }
+
+  const xScale=view.getFloat64(131,true), yScale=view.getFloat64(139,true), zScale=view.getFloat64(147,true);
+  const xOff=view.getFloat64(155,true),   yOff=view.getFloat64(163,true),   zOff=view.getFloat64(171,true);
+
+  const hasRGB = [2,3,5,7,8].includes(pointFormat);
+  let rgbOff = 0;
+  if(pointFormat===2) rgbOff=20;
+  else if(pointFormat===3||pointFormat===5) rgbOff=28;
+  else if(pointFormat===7||pointFormat===8) rgbOff=30;
+
+  const MAX_PTS = 4_000_000;
+  const step = numPoints > MAX_PTS ? Math.ceil(numPoints/MAX_PTS) : 1;
+  const count = Math.min(numPoints, MAX_PTS);
+
+  const positions=new Float32Array(count*3);
+  const intensities=new Float32Array(count);
+  const colors=hasRGB ? new Float32Array(count*3) : null;
+  const classifications=new Uint8Array(count);
+
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,minZ=Infinity,maxZ=-Infinity;
+  let minI=Infinity,maxI=-Infinity;
+  let idx=0;
+
+  for(let i=0;i<numPoints&&idx<count;i+=step){
+    const base=offsetToData+i*pointRecLen;
+    if(base+20>buffer.byteLength) break;
+    const x=view.getInt32(base,true)*xScale+xOff;
+    const y=view.getInt32(base+4,true)*yScale+yOff;
+    const z=view.getInt32(base+8,true)*zScale+zOff;
+    const intens=view.getUint16(base+12,true);
+    const cls=view.getUint8(base+15);
+
+    positions[idx*3]=x; positions[idx*3+1]=y; positions[idx*3+2]=z;
+    intensities[idx]=intens; classifications[idx]=cls;
+
+    if(hasRGB&&colors&&base+rgbOff+6<=buffer.byteLength){
+      colors[idx*3]=view.getUint16(base+rgbOff,true)/65535;
+      colors[idx*3+1]=view.getUint16(base+rgbOff+2,true)/65535;
+      colors[idx*3+2]=view.getUint16(base+rgbOff+4,true)/65535;
+    }
+    if(x<minX)minX=x; if(x>maxX)maxX=x;
+    if(y<minY)minY=y; if(y>maxY)maxY=y;
+    if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
+    if(intens<minI)minI=intens; if(intens>maxI)maxI=intens;
+    idx++;
+  }
+
+  const cx=(minX+maxX)/2, cy=(minY+maxY)/2, cz=(minZ+maxZ)/2;
+  for(let i=0;i<idx;i++){
+    positions[i*3]-=cx; positions[i*3+1]-=cy; positions[i*3+2]-=cz;
+  }
+
+  return {
+    positions:positions.subarray(0,idx*3),
+    intensities:intensities.subarray(0,idx),
+    colors:colors?colors.subarray(0,idx*3):null,
+    classifications:classifications.subarray(0,idx),
+    count:idx, version:`${verMaj}.${verMin}`, pointFormat, hasRGB,
+    subsampled:step>1, originalCount:numPoints,
+    bounds:{minX,maxX,minY,maxY,minZ,maxZ},
+    centroid:{cx,cy,cz},
+    intensityRange:{min:minI,max:maxI},
+  };
+}
+
+// ─────────────────────────────────────────────────
+//  THREE.JS SETUP
+// ─────────────────────────────────────────────────
+const wrap=document.getElementById('canvas-wrap');
+const renderer=new THREE.WebGLRenderer({antialias:false});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(0x080809);
+renderer.localClippingEnabled=true;
+wrap.appendChild(renderer.domElement);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(55,1,0.01,100000);
+camera.position.set(0,-200,80);
+camera.up.set(0,0,1);
+camera.lookAt(0,0,0);
+
+let points=null, pointData=null;
+let colorMode='elevation';
+let brightness=1.0;
+let rangeMin=0, rangeMax=100;
+let autoRotate=true;
+let sliceAxis='x', sliceNear=0, sliceFar=100;
+// Two clipping planes: one from each side, creating a slab
+const clipPlaneNear = new THREE.Plane(new THREE.Vector3(1,0,0),  0); // keep x >= near
+const clipPlaneFar  = new THREE.Plane(new THREE.Vector3(-1,0,0), 0); // keep x <= far
+
+function resize(){
+  const w=wrap.clientWidth, h=wrap.clientHeight;
+  renderer.setSize(w,h);
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize',resize);
+
+// ─────────────────────────────────────────────────
+//  ORBIT
+// ─────────────────────────────────────────────────
+const orbit={theta:0.5,phi:1.1,radius:300,target:new THREE.Vector3(),zoomSpeed:1.1,_down:false,_rightDown:false,_mx:0,_my:0};
+
+function updateCamera(){
+  const sp=Math.sin(orbit.phi),cp=Math.cos(orbit.phi);
+  const st=Math.sin(orbit.theta),ct=Math.cos(orbit.theta);
+  camera.position.set(
+    orbit.target.x+orbit.radius*sp*ct,
+    orbit.target.y+orbit.radius*sp*st,
+    orbit.target.z+orbit.radius*cp
+  );
+  camera.lookAt(orbit.target);
+}
+updateCamera();
+
+const el=renderer.domElement;
+el.addEventListener('mousedown',e=>{
+  if(e.button===0)orbit._down=true;
+  if(e.button===2)orbit._rightDown=true;
+  orbit._mx=e.clientX; orbit._my=e.clientY; e.preventDefault();
+});
+el.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('mouseup',e=>{ if(e.button===0)orbit._down=false; if(e.button===2)orbit._rightDown=false; });
+window.addEventListener('mousemove',e=>{
+  const dx=e.clientX-orbit._mx, dy=e.clientY-orbit._my;
+  orbit._mx=e.clientX; orbit._my=e.clientY;
+  if(orbit._down){
+    orbit.theta-=dx*0.008;
+    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi+dy*0.008));
+    updateCamera();
+  }
+  if(orbit._rightDown){
+    const right=new THREE.Vector3();
+    right.crossVectors(camera.getWorldDirection(new THREE.Vector3()),camera.up).normalize();
+    const up2=camera.up.clone().normalize();
+    const scale=orbit.radius*0.001;
+    orbit.target.addScaledVector(right,-dx*scale);
+    orbit.target.addScaledVector(up2,dy*scale);
+    updateCamera();
+  }
+});
+el.addEventListener('wheel',e=>{
+  orbit.radius*=e.deltaY>0?orbit.zoomSpeed:1/orbit.zoomSpeed;
+  orbit.radius=Math.max(0.1,Math.min(100000,orbit.radius));
+  updateCamera(); e.preventDefault();
+},{passive:false});
+
+let _touches=[];
+el.addEventListener('touchstart',e=>{_touches=Array.from(e.touches);e.preventDefault();},{passive:false});
+el.addEventListener('touchmove',e=>{
+  const t=Array.from(e.touches);
+  if(t.length===1&&_touches.length===1){
+    orbit.theta-=(t[0].clientX-_touches[0].clientX)*0.008;
+    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi+(t[0].clientY-_touches[0].clientY)*0.008));
+    updateCamera();
+  } else if(t.length===2&&_touches.length===2){
+    const d0=Math.hypot(_touches[0].clientX-_touches[1].clientX,_touches[0].clientY-_touches[1].clientY);
+    const d1=Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+    orbit.radius*=d0/d1; orbit.radius=Math.max(0.1,Math.min(100000,orbit.radius)); updateCamera();
+  }
+  _touches=t; e.preventDefault();
+},{passive:false});
+
+// ─────────────────────────────────────────────────
+//  COLOR GENERATION
+// ─────────────────────────────────────────────────
+function buildColors(data,mode,rMin,rMax,bright){
+  const n=data.count, buf=new Float32Array(n*3);
+  const lo=rMin/100, hi=rMax/100, span=Math.max(hi-lo,0.001);
+
+  if(mode==='elevation'){
+    const {minZ,maxZ}=data.bounds, range=maxZ-minZ||1;
+    for(let i=0;i<n;i++){
+      const raw=(data.positions[i*3+2]+(data.centroid.cz-data.bounds.minZ))/range;
+      const t=Math.max(0,Math.min(1,(raw-lo)/span));
+      const[r,g,b]=jetColor(t);
+      buf[i*3]=r*bright; buf[i*3+1]=g*bright; buf[i*3+2]=b*bright;
+    }
+  } else if(mode==='intensity'){
+    const {min,max}=data.intensityRange, range=max-min||1;
+    for(let i=0;i<n;i++){
+      const raw=(data.intensities[i]-min)/range;
+      const t=Math.max(0,Math.min(1,(raw-lo)/span));
+      const[r,g,b]=jetColor(t);
+      buf[i*3]=r*bright; buf[i*3+1]=g*bright; buf[i*3+2]=b*bright;
+    }
+  } else if(mode==='rgb'&&data.hasRGB){
+    for(let i=0;i<n;i++){
+      buf[i*3]=data.colors[i*3]*bright;
+      buf[i*3+1]=data.colors[i*3+1]*bright;
+      buf[i*3+2]=data.colors[i*3+2]*bright;
+    }
+  } else if(mode==='classification'){
+    for(let i=0;i<n;i++){
+      const[r,g,b]=CLASS_COLORS[data.classifications[i]]||DEFAULT_CLASS_COLOR;
+      buf[i*3]=r*bright; buf[i*3+1]=g*bright; buf[i*3+2]=b*bright;
+    }
+  } else {
+    const {minZ,maxZ}=data.bounds, range=maxZ-minZ||1;
+    for(let i=0;i<n;i++){
+      const raw=(data.positions[i*3+2]+(data.centroid.cz-data.bounds.minZ))/range;
+      const t=Math.max(0,Math.min(1,(raw-lo)/span));
+      const[r,g,b]=jetColor(t);
+      buf[i*3]=r*bright; buf[i*3+1]=g*bright; buf[i*3+2]=b*bright;
+    }
+  }
+  return buf;
+}
+
+// ─────────────────────────────────────────────────
+//  SCENE
+// ─────────────────────────────────────────────────
+function loadPointCloud(data){
+  if(points){ scene.remove(points); points.geometry.dispose(); points.material.dispose(); }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(data.positions,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(buildColors(data,colorMode,rangeMin,rangeMax,brightness),3));
+  const mat=new THREE.PointsMaterial({size:parseFloat(document.getElementById('size-slider').value),vertexColors:true,sizeAttenuation:true,clippingPlanes:[clipPlaneNear,clipPlaneFar]});
+  points=new THREE.Points(geo,mat); scene.add(points);
+
+  const ext=Math.max(data.bounds.maxX-data.bounds.minX,data.bounds.maxY-data.bounds.minY,data.bounds.maxZ-data.bounds.minZ);
+  orbit.radius=ext*1.2; orbit.target.set(0,0,0); orbit.theta=0.5; orbit.phi=1.1; updateCamera();
+
+  document.getElementById('empty-state').style.display='none';
+  updateLegend(data); updateClassLegend(data); updateRangeAbsLabels(data); updateJetClips();
+  updateSlicePlanes();
+}
+
+function refreshColors(){
+  if(!points||!pointData) return;
+  points.geometry.setAttribute('color',new THREE.BufferAttribute(buildColors(pointData,colorMode,rangeMin,rangeMax,brightness),3));
+  points.geometry.attributes.color.needsUpdate=true;
+  updateLegend(pointData); updateClassLegend(pointData);
+}
+
+// ─────────────────────────────────────────────────
+//  JET CLIP OVERLAY (visual range indicator)
+// ─────────────────────────────────────────────────
+function updateJetClips(){
+  document.getElementById('clip-left').style.width=rangeMin+'%';
+  document.getElementById('clip-right').style.width=(100-rangeMax)+'%';
+}
+
+// ─────────────────────────────────────────────────
+//  SLICE PLANES
+// ─────────────────────────────────────────────────
+function updateSlicePlanes(){
+  if(!pointData){ return; }
+  const b=pointData.bounds, c=pointData.centroid;
+  let worldMin, worldMax;
+  if(sliceAxis==='x'){
+    worldMin=b.minX-c.cx; worldMax=b.maxX-c.cx;
+    clipPlaneNear.normal.set(1,0,0);
+    clipPlaneFar.normal.set(-1,0,0);
+  } else {
+    worldMin=b.minY-c.cy; worldMax=b.maxY-c.cy;
+    clipPlaneNear.normal.set(0,1,0);
+    clipPlaneFar.normal.set(0,-1,0);
+  }
+  const range=worldMax-worldMin;
+  const nearWorld=worldMin+(sliceNear/100)*range;
+  const farWorld =worldMin+(sliceFar /100)*range;
+  // Plane constant: dot(normal,point)+constant >= 0 to be visible
+  // Near plane (keep ≥ nearWorld): constant = -nearWorld
+  clipPlaneNear.constant = -nearWorld;
+  // Far  plane (keep ≤ farWorld):  constant =  farWorld
+  clipPlaneFar.constant  =  farWorld;
+
+  // Update track fill
+  const fill=document.getElementById('slice-track-fill');
+  fill.style.left=sliceNear+'%';
+  fill.style.width=(sliceFar-sliceNear)+'%';
+
+  // Absolute labels
+  const absNear=sliceAxis==='x'? (b.minX+(sliceNear/100)*(b.maxX-b.minX)) : (b.minY+(sliceNear/100)*(b.maxY-b.minY));
+  const absFar =sliceAxis==='x'? (b.minX+(sliceFar /100)*(b.maxX-b.minX)) : (b.minY+(sliceFar /100)*(b.maxY-b.minY));
+  document.getElementById('slice-abs-near').textContent=absNear.toFixed(1)+'m';
+  document.getElementById('slice-abs-far').textContent=absFar.toFixed(1)+'m';
+}
+function updateRangeAbsLabels(data){
+  if(!data||colorMode==='rgb'||colorMode==='classification'){
+    document.getElementById('range-abs-min').textContent='—';
+    document.getElementById('range-abs-max').textContent='—';
+    return;
+  }
+  let minV,maxV;
+  if(colorMode==='elevation'){ minV=data.bounds.minZ; maxV=data.bounds.maxZ; }
+  else { minV=data.intensityRange.min; maxV=data.intensityRange.max; }
+  const range=maxV-minV;
+  document.getElementById('range-abs-min').textContent=(minV+rangeMin/100*range).toFixed(1);
+  document.getElementById('range-abs-max').textContent=(minV+rangeMax/100*range).toFixed(1);
+}
+
+// ─────────────────────────────────────────────────
+//  LEGEND
+// ─────────────────────────────────────────────────
+function updateLegend(data){
+  const leg=document.getElementById('legend');
+  if(colorMode==='classification'){ leg.style.display='none'; return; }
+  leg.style.display='block';
+  const ctx=document.getElementById('legend-canvas').getContext('2d');
+  const lo=rangeMin/100, hi=rangeMax/100, span=Math.max(hi-lo,0.001);
+  for(let y=0;y<120;y++){
+    const raw=1-(y/119);
+    const t=Math.max(0,Math.min(1,(raw-lo)/span));
+    const[r,g,b]=jetColor(t);
+    ctx.fillStyle=`rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;
+    ctx.fillRect(0,y,16,1);
+  }
+  let minV,maxV,unit='';
+  if(colorMode==='elevation'){ minV=data.bounds.minZ; maxV=data.bounds.maxZ; unit='m'; }
+  else { minV=data.intensityRange.min; maxV=data.intensityRange.max; }
+  const range=maxV-minV;
+  const lo_abs=minV+rangeMin/100*range, hi_abs=minV+rangeMax/100*range;
+  document.getElementById('legend-max').textContent=hi_abs.toFixed(1)+unit;
+  document.getElementById('legend-mid').textContent=((lo_abs+hi_abs)/2).toFixed(1)+unit;
+  document.getElementById('legend-min').textContent=lo_abs.toFixed(1)+unit;
+}
+
+function updateClassLegend(data){
+  const clsLeg=document.getElementById('class-legend');
+  if(colorMode!=='classification'){ clsLeg.style.display='none'; return; }
+  document.getElementById('legend').style.display='none';
+  const seen=new Set(data.classifications);
+  const items=document.getElementById('class-legend-items');
+  items.innerHTML='';
+  seen.forEach(cls=>{
+    const[r,g,b]=CLASS_COLORS[cls]||DEFAULT_CLASS_COLOR;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:6px;';
+    row.innerHTML=`<div style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})"></div><span style="font-size:11px;color:rgba(232,232,234,0.7);font-family:'JetBrains Mono',monospace;">${cls} – ${CLASS_NAMES[cls]||'Class '+cls}</span>`;
+    items.appendChild(row);
+  });
+  clsLeg.style.display='block';
+}
+
+// ─────────────────────────────────────────────────
+//  HUD
+// ─────────────────────────────────────────────────
+function updateHUD(data){
+  document.getElementById('hud-tl').innerHTML=[
+    `PTS &nbsp;${data.count.toLocaleString()}${data.subsampled?` <span style="color:rgba(244,111,41,0.5)">(1:${Math.ceil(data.originalCount/data.count)})</span>`:''}`,
+    `MODE ${colorMode.toUpperCase()}`,
+    `RANGE ${rangeMin}% → ${rangeMax}%`,
+  ].join('<br>');
+}
+
+// ─────────────────────────────────────────────────
+//  FILE HANDLING
+// ─────────────────────────────────────────────────
+function setStatus(state,label){ document.getElementById('status-dot').className=state; document.getElementById('status-label').textContent=label; }
+function setProgress(pct,label){ document.getElementById('progress-fill').style.width=pct+'%'; document.getElementById('progress-label').textContent=label; }
+
+async function handleFile(file){
+  if(!file.name.toLowerCase().endsWith('.las')){ alert('Please upload a .LAS file.'); return; }
+  document.getElementById('file-badge').textContent=file.name;
+  document.getElementById('progress-wrap').style.display='block';
+  setStatus('loading','PARSING'); setProgress(10,'Reading file…');
+  await new Promise(r=>setTimeout(r,20));
+  try{
+    const buffer=await file.arrayBuffer();
+    setProgress(40,'Parsing header…'); await new Promise(r=>setTimeout(r,20));
+    setProgress(60,'Reading points…'); await new Promise(r=>setTimeout(r,20));
+    const data=parseLAS(buffer); pointData=data;
+    setProgress(85,'Building scene…'); await new Promise(r=>setTimeout(r,20));
+    loadPointCloud(data);
+    document.getElementById('stat-points').textContent=data.count.toLocaleString()+(data.subsampled?' ↓':'');
+    document.getElementById('stat-z').textContent=`${data.bounds.minZ.toFixed(1)} → ${data.bounds.maxZ.toFixed(1)}`;
+    document.getElementById('btn-rgb').classList.toggle('disabled',!data.hasRGB);
+    updateHUD(data);
+    setProgress(100,'Done'); setStatus('active','ACTIVE');
+    setTimeout(()=>document.getElementById('progress-wrap').style.display='none',800);
+  } catch(err){
+    console.error(err); alert('Error parsing LAS file: '+err.message);
+    setStatus('','ERROR'); document.getElementById('progress-wrap').style.display='none';
+  }
+}
+
+const dropZone=document.getElementById('drop-zone');
+const fileInput=document.getElementById('file-input');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{ e.preventDefault(); dropZone.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f)handleFile(f); });
+fileInput.addEventListener('change',e=>{ const f=e.target.files[0]; if(f)handleFile(f); });
+
+// ─────────────────────────────────────────────────
+//  UI CONTROLS
+// ─────────────────────────────────────────────────
+
+// Color mode
+document.querySelectorAll('.mode-btn[data-mode]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.classList.contains('disabled')) return;
+    document.querySelectorAll('.mode-btn[data-mode]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    colorMode=btn.dataset.mode;
+    const showRange=colorMode==='elevation';
+    document.getElementById('jet-range-section').style.display=showRange?'block':'none';
+    refreshColors();
+    if(pointData){ updateHUD(pointData); updateRangeAbsLabels(pointData); }
+  });
+});
+
+// Range Min
+const rMinSlider=document.getElementById('range-min');
+const rMinVal=document.getElementById('range-min-val');
+rMinSlider.addEventListener('input',()=>{
+  rangeMin=parseInt(rMinSlider.value);
+  if(rangeMin>=rangeMax-2){ rangeMin=rangeMax-2; rMinSlider.value=rangeMin; }
+  rMinVal.textContent=rangeMin+'%';
+  updateJetClips();
+  refreshColors();
+  if(pointData){ updateHUD(pointData); updateRangeAbsLabels(pointData); }
+});
+
+// Range Max
+const rMaxSlider=document.getElementById('range-max');
+const rMaxVal=document.getElementById('range-max-val');
+rMaxSlider.addEventListener('input',()=>{
+  rangeMax=parseInt(rMaxSlider.value);
+  if(rangeMax<=rangeMin+2){ rangeMax=rangeMin+2; rMaxSlider.value=rangeMax; }
+  rMaxVal.textContent=rangeMax+'%';
+  updateJetClips();
+  refreshColors();
+  if(pointData){ updateHUD(pointData); updateRangeAbsLabels(pointData); }
+});
+
+// Point Size
+const sizeSlider=document.getElementById('size-slider');
+const sizeVal=document.getElementById('size-val');
+sizeSlider.addEventListener('input',()=>{
+  sizeVal.textContent=sizeSlider.value;
+  if(points) points.material.size=parseFloat(sizeSlider.value);
+});
+
+// Brightness
+const brightSlider=document.getElementById('bright-slider');
+const brightVal=document.getElementById('bright-val');
+brightSlider.addEventListener('input',()=>{
+  brightness=parseFloat(brightSlider.value);
+  brightVal.textContent=brightness.toFixed(1);
+  refreshColors();
+});
+
+// Vertical Slice – Axis
+document.querySelectorAll('.mode-btn[data-axis]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mode-btn[data-axis]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    sliceAxis=btn.dataset.axis;
+    updateSlicePlanes();
+  });
+});
+
+// Vertical Slice – Near
+const sliceNearSlider=document.getElementById('slice-near');
+const sliceNearVal=document.getElementById('slice-near-val');
+sliceNearSlider.addEventListener('input',()=>{
+  sliceNear=parseInt(sliceNearSlider.value);
+  if(sliceNear>=sliceFar-2){ sliceNear=sliceFar-2; sliceNearSlider.value=sliceNear; }
+  sliceNearVal.textContent=sliceNear+'%';
+  updateSlicePlanes();
+});
+
+// Vertical Slice – Far
+const sliceFarSlider=document.getElementById('slice-far');
+const sliceFarVal=document.getElementById('slice-far-val');
+sliceFarSlider.addEventListener('input',()=>{
+  sliceFar=parseInt(sliceFarSlider.value);
+  if(sliceFar<=sliceNear+2){ sliceFar=sliceNear+2; sliceFarSlider.value=sliceFar; }
+  sliceFarVal.textContent=sliceFar+'%';
+  updateSlicePlanes();
+});
+
+// Auto-Rotate
+document.getElementById('auto-rotate-toggle').addEventListener('change',e=>{ autoRotate=e.target.checked; });
+
+// Reset
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  if(!pointData) return;
+  const ext=Math.max(pointData.bounds.maxX-pointData.bounds.minX,pointData.bounds.maxY-pointData.bounds.minY,pointData.bounds.maxZ-pointData.bounds.minZ);
+  orbit.radius=ext*1.2; orbit.target.set(0,0,0); orbit.theta=0.5; orbit.phi=1.1; updateCamera();
+});
+
+// Top View
+document.getElementById('btn-top').addEventListener('click',()=>{
+  if(!pointData) return;
+  orbit.phi=0.05; orbit.theta=0; updateCamera();
+});
+
+// Side View
+document.getElementById('btn-side').addEventListener('click',()=>{
+  if(!pointData) return;
+  orbit.phi=Math.PI/2; orbit.theta=0; updateCamera();
+});
+
+// Fit to View
+document.getElementById('btn-fit').addEventListener('click',()=>{
+  if(!pointData) return;
+  const b=pointData.bounds;
+  const ext=Math.max(b.maxX-b.minX, b.maxY-b.minY, b.maxZ-b.minZ);
+  const fovRad=camera.fov*(Math.PI/180);
+  orbit.radius=(ext/2)/Math.tan(fovRad/2)*1.5;
+  orbit.target.set(0,0,0);
+  updateCamera();
+});
+
+// ─────────────────────────────────────────────────
+//  RENDER LOOP
+// ─────────────────────────────────────────────────
+let lastTime=performance.now();
+function animate(){
+  requestAnimationFrame(animate);
+  const now=performance.now(), dt=(now-lastTime)/1000; lastTime=now;
+  if(autoRotate&&points&&!orbit._down&&!orbit._rightDown){
+    orbit.theta+=dt*0.18; updateCamera();
+  }
+  renderer.render(scene,camera);
+}
+animate();
+</script>
+</body>
+</html>
