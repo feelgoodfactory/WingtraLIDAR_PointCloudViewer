@@ -69,15 +69,6 @@
 
   .topbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
 
-  #status-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--text-muted); transition: background 0.3s;
-  }
-  #status-dot.active { background: var(--green); box-shadow: 0 0 6px var(--green); }
-  #status-dot.loading { background: var(--ci); box-shadow: 0 0 6px var(--ci); animation: pulse 1s infinite; }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
   #status-label {
     font-size: 11px; font-family: 'JetBrains Mono', monospace;
     color: var(--text-dim); letter-spacing: 0.05em;
@@ -89,15 +80,15 @@
   /* ── SIDEBAR ─────────────────────────────── */
   #sidebar {
     width: 260px; flex-shrink: 0;
-    background: var(--surface); border-right: 1px solid var(--border);
+    background: #ffffff; border-right: 1px solid #e0e0e0;
     display: flex; flex-direction: column;
     overflow-y: auto; overflow-x: hidden;
   }
 
-  .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-section { padding: 16px; border-bottom: 1px solid #ebebeb; }
 
   .section-label {
-    font-size: 9px; font-weight: 700; letter-spacing: 0.2em;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--ci);
     font-family: 'JetBrains Mono', monospace; margin-bottom: 12px;
   }
@@ -115,8 +106,8 @@
     position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
   }
   .drop-icon { width: 36px; height: 36px; margin: 0 auto 10px; opacity: 0.7; }
-  .drop-title { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: var(--text); }
-  .drop-hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  .drop-title { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; color: #222222; }
+  .drop-hint { font-size: 11px; color: #666666; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 
   /* ── PROGRESS ────────────────────────────── */
   #progress-wrap { display: none; margin-top: 12px; }
@@ -126,25 +117,25 @@
 
   /* ── STATS ───────────────────────────────── */
   .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .stat-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; }
+  .stat-cell { background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 5px; padding: 8px 10px; }
   .stat-cell.full { grid-column: 1/-1; }
-  .stat-key { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 3px; }
+  .stat-key { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #aaaaaa; font-family: 'JetBrains Mono', monospace; margin-bottom: 3px; }
   .stat-val { font-size: 13px; font-weight: 600; color: var(--ci); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
-  .stat-val.white { color: var(--text); }
+  .stat-val.white { color: #222222; }
 
   /* ── CONTROLS ────────────────────────────── */
   .ctrl-group { margin-bottom: 14px; }
   .ctrl-group:last-child { margin-bottom: 0; }
-  .ctrl-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; display: block; }
+  .ctrl-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #666666; margin-bottom: 8px; display: block; }
 
   .mode-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
   .mode-btn {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
-    color: var(--text-dim); font-family: 'Rajdhani', sans-serif;
+    background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 4px;
+    color: #888888; font-family: 'Rajdhani', sans-serif;
     font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
     padding: 7px 6px; cursor: pointer; transition: all 0.15s; text-align: center;
   }
-  .mode-btn:hover { border-color: var(--border-bright); color: var(--text); }
+  .mode-btn:hover { border-color: var(--ci); color: var(--ci); background: var(--ci-dim); }
   .mode-btn.active { background: var(--ci-dim); border-color: var(--ci); color: var(--ci); }
   .mode-btn.disabled { opacity: 0.3; pointer-events: none; }
 
@@ -152,7 +143,7 @@
   .slider-row { display: flex; align-items: center; gap: 10px; }
   input[type=range] {
     flex: 1; -webkit-appearance: none; height: 3px;
-    background: var(--surface3); border-radius: 2px; outline: none; cursor: pointer;
+    background: #e0e0e0; border-radius: 2px; outline: none; cursor: pointer;
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none; width: 14px; height: 14px;
@@ -183,25 +174,25 @@
 
   .range-row { margin-bottom: 10px; }
   .range-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-  .range-key { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+  .range-key { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #aaaaaa; font-family: 'JetBrains Mono', monospace; }
   .range-val { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--ci); }
 
-  .range-abs-row { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
+  .range-abs-row { display: flex; justify-content: space-between; font-size: 9px; color: #aaaaaa; font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
 
   /* ── TOGGLE SWITCH ───────────────────────── */
   .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-  .toggle-label-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
+  .toggle-label-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #666666; }
   .toggle-switch { position: relative; width: 38px; height: 22px; cursor: pointer; }
   .toggle-switch input { opacity: 0; width: 0; height: 0; }
   .toggle-track {
-    position: absolute; inset: 0; background: var(--surface3);
-    border-radius: 11px; border: 1px solid var(--border-bright);
+    position: absolute; inset: 0; background: #e8e8e8;
+    border-radius: 11px; border: 1px solid #d0d0d0;
     transition: background 0.2s, border-color 0.2s;
   }
   .toggle-track::after {
     content: ''; position: absolute; top: 3px; left: 3px;
     width: 14px; height: 14px; border-radius: 50%;
-    background: var(--text-muted); transition: transform 0.2s, background 0.2s;
+    background: #bbbbbb; transition: transform 0.2s, background 0.2s;
   }
   .toggle-switch input:checked + .toggle-track { background: var(--ci-dim); border-color: var(--ci); }
   .toggle-switch input:checked + .toggle-track::after {
@@ -212,8 +203,8 @@
   /* Buttons */
   .btn {
     width: 100%; padding: 9px 14px;
-    background: var(--surface2); border: 1px solid var(--border-bright);
-    border-radius: 4px; color: var(--text);
+    background: #f5f5f5; border: 1px solid #e0e0e0;
+    border-radius: 4px; color: #444444;
     font-family: 'Rajdhani', sans-serif;
     font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
     text-transform: uppercase; cursor: pointer; transition: all 0.15s;
@@ -225,6 +216,8 @@
   /* ── CANVAS AREA ─────────────────────────── */
   #canvas-wrap { flex: 1; position: relative; overflow: hidden; }
   #canvas-wrap canvas { display: block; }
+  #canvas-wrap.drag-active { outline: 3px dashed var(--ci); outline-offset: -3px; }
+  #canvas-wrap.drag-active #empty-state { background: rgba(244,111,41,0.06); }
 
   #empty-state {
     position: absolute; inset: 0;
@@ -235,7 +228,6 @@
   .empty-title { font-size: 22px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
   .empty-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
 
-  #hud-tl { position: absolute; top: 14px; left: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(244,111,41,0.6); letter-spacing: 0.05em; pointer-events: none; line-height: 1.7; }
   #hud-br { position: absolute; bottom: 14px; right: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; pointer-events: none; text-align: right; line-height: 1.8; }
 
   /* Legend */
@@ -259,14 +251,186 @@
   }
   .slice-abs-row {
     display: flex; justify-content: space-between;
-    font-size: 9px; color: var(--text-muted);
+    font-size: 9px; color: #aaaaaa;
     font-family: 'JetBrains Mono', monospace; margin-top: 4px;
+  }
+
+  /* ── EXPORT FRAME OVERLAY ────────────────── */
+  #export-frame {
+    position: absolute;
+    pointer-events: none;
+    border: 2px solid var(--ci);
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+    display: none;
+    z-index: 5;
+  }
+  #export-frame.visible { display: block; }
+  #export-frame-label {
+    position: absolute;
+    top: -22px; left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--ci);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  /* ── EXPORT ──────────────────────────────── */
+  .res-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px; }
+  .res-btn {
+    background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 4px;
+    color: #888888; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 7px 4px; cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .res-btn:hover { border-color: var(--ci); color: var(--ci); background: var(--ci-dim); }
+  .res-btn.active { background: var(--ci-dim); border-color: var(--ci); color: var(--ci); }
+
+  .export-custom-row {
+    display: flex; gap: 6px; align-items: center; margin-bottom: 10px;
+  }
+  .export-dim-input {
+    flex: 1; background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 4px;
+    color: #222; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; padding: 6px 8px; outline: none; text-align: center;
+    transition: border-color 0.15s;
+  }
+  .export-dim-input:focus { border-color: var(--ci); }
+  .export-dim-sep { font-size: 12px; color: #aaa; font-family: 'JetBrains Mono', monospace; }
+
+  .export-format-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px;
+  }
+
+  .export-transp-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; background: #f5f5f5; border: 1px solid #e8e8e8;
+    border-radius: 4px; margin-bottom: 10px;
+  }
+  .export-transp-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #666;
+  }
+  .export-transp-note {
+    font-size: 9px; color: #aaa; font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .btn-export {
+    width: 100%; padding: 11px 14px;
+    background: var(--ci); border: none;
+    border-radius: 4px; color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-export:hover { background: #ff8040; }
+  .btn-export:disabled { opacity: 0.4; cursor: not-allowed; background: var(--ci); }
+
+  .export-feedback {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: #aaa; text-align: center; margin-top: 8px; min-height: 14px;
+  }
+
+  /* ── COLLAPSIBLE SECTIONS ────────────────── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+    margin-bottom: 0;
+    padding: 14px 16px;
+    margin: -16px -16px 0;
+  }
+  .section-header:hover .section-label { color: #c45a1e; }
+  .section-label { margin-bottom: 0; }
+  .section-chevron {
+    width: 16px; height: 16px; flex-shrink: 0;
+    color: var(--ci); transition: transform 0.22s ease;
+  }
+  .section-chevron.open { transform: rotate(180deg); }
+  .section-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.28s ease, padding-top 0.22s;
+    padding-top: 0;
+  }
+  .section-body.open {
+    max-height: 1200px;
+    padding-top: 12px;
   }
 
   /* scrollbar */
   #sidebar::-webkit-scrollbar { width: 4px; }
   #sidebar::-webkit-scrollbar-track { background: transparent; }
-  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  #sidebar::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
+
+  /* ── VERSION BADGE ───────────────────────── */
+  .version-badge {
+    margin: 0 16px 0;
+    padding: 7px 10px;
+    background: #f5f5f5;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .version-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: #aaaaaa;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .version-val {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--ci); font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── COLOR WHEEL ─────────────────────────── */
+  .color-wheel-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  #bg-wheel-canvas {
+    border-radius: 50%;
+    cursor: crosshair;
+    display: block;
+    border: 2px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  #bg-wheel-canvas:hover { border-color: var(--ci); }
+
+  .bg-brightness-row { width: 100%; }
+
+  .hex-input-row {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+  }
+  .hex-prefix {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: #888888; flex-shrink: 0;
+  }
+  #bg-hex-input {
+    flex: 1; background: #f5f5f5;
+    border: 1px solid #e0e0e0; border-radius: 4px;
+    color: #222222; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: 0.06em;
+    padding: 7px 10px; outline: none;
+    text-transform: uppercase;
+    transition: border-color 0.15s;
+  }
+  #bg-hex-input:focus { border-color: var(--ci); }
+  #bg-hex-input.invalid { border-color: #f25f5c; }
+
+  .bg-swatch {
+    width: 30px; height: 30px; border-radius: 4px;
+    border: 1px solid #e0e0e0; flex-shrink: 0;
+    background: #080809;
+  }
+
+  .bg-presets {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; width: 100%;
+  }
+  .bg-preset {
+    width: 100%; aspect-ratio: 1; border-radius: 3px;
+    border: 1px solid #e0e0e0; cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .bg-preset:hover { transform: scale(1.15); border-color: var(--ci); }
+  .bg-preset.active { border-color: var(--ci); box-shadow: 0 0 0 1px var(--ci); }
 </style>
 </head>
 <body>
@@ -287,8 +451,6 @@
     <div class="topbar-sep"></div>
     <span id="file-badge">No file loaded</span>
     <div class="topbar-right">
-      <div id="status-dot"></div>
-      <span id="status-label">IDLE</span>
     </div>
   </div>
 
@@ -298,170 +460,333 @@
     <!-- SIDEBAR -->
     <div id="sidebar">
 
-      <!-- FILE -->
+      <!-- DATA SOURCE -->
       <div class="sidebar-section">
-        <div class="section-label">Data Source</div>
-        <div id="drop-zone">
-          <input type="file" id="file-input" accept=".las">
-          <svg class="drop-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 4L32 12V24L18 32L4 24V12L18 4Z" stroke="#F46F29" stroke-width="1.5" fill="rgba(244,111,41,0.08)"/>
-            <path d="M12 18H24M18 12V24" stroke="#F46F29" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="drop-title">Drop .LAS File Here</div>
-          <div class="drop-hint">or click to browse</div>
+        <div class="section-header" data-target="body-datasource">
+          <span class="section-label">Data Source</span>
+          <svg class="section-chevron open" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div id="progress-wrap">
-          <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
-          <div class="progress-label" id="progress-label">Parsing…</div>
+        <div class="section-body open" id="body-datasource">
+          <div id="drop-zone">
+            <input type="file" id="file-input" accept=".las">
+            <svg class="drop-icon" viewBox="0 0 36 36" fill="none">
+              <path d="M18 4L32 12V24L18 32L4 24V12L18 4Z" stroke="#F46F29" stroke-width="1.5" fill="rgba(244,111,41,0.08)"/>
+              <path d="M12 18H24M18 12V24" stroke="#F46F29" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="drop-title">Drop .LAS File Here</div>
+            <div class="drop-hint">or click to browse</div>
+          </div>
+          <div id="progress-wrap">
+            <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+            <div class="progress-label" id="progress-label">Parsing…</div>
+          </div>
         </div>
       </div>
 
-      <!-- STATS -->
+      <!-- VIEWER SETTINGS (was Camera + Background Color merged) -->
       <div class="sidebar-section">
-        <div class="section-label">File Stats</div>
-        <div class="stat-grid">
-          <div class="stat-cell full">
-            <div class="stat-key">Points Rendered</div>
-            <div class="stat-val" id="stat-points">—</div>
+        <div class="section-header" data-target="body-viewer">
+          <span class="section-label">📺 Perspective & Views</span>
+          <svg class="section-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="section-body" id="body-viewer">
+
+          <div class="ctrl-group">
+            <div class="toggle-row">
+              <span class="toggle-label-text">Auto-Rotate</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="auto-rotate-toggle">
+                <div class="toggle-track"></div>
+              </label>
+            </div>
           </div>
-          <div class="stat-cell full">
-            <div class="stat-key">Z Range (m)</div>
-            <div class="stat-val white" id="stat-z">—</div>
+
+          <span class="ctrl-label">Views</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;">
+            <button class="btn" id="btn-reset" style="margin-bottom:0;">↺ Reset</button>
+            <button class="btn" id="btn-top"   style="margin-bottom:0;">⊞ Top</button>
+            <button class="btn" id="btn-back"  style="margin-bottom:0;">↑ Back</button>
+            <button class="btn" id="btn-side-left"  style="margin-bottom:0;">◁ Side L</button>
+            <button class="btn" id="btn-side-right" style="margin-bottom:0;">▷ Side R</button>
           </div>
+
         </div>
       </div>
 
-      <!-- COLOR MODE -->
+      <!-- VIEWER QUALITY (was File Stats) -->
       <div class="sidebar-section">
-        <div class="section-label">Color Mode</div>
-        <div class="mode-buttons">
-          <button class="mode-btn active" data-mode="elevation">Elevation</button>
-          <button class="mode-btn disabled" id="btn-rgb" data-mode="rgb">RGB</button>
+        <div class="section-header" data-target="body-quality">
+          <span class="section-label">🗺️ Viewer Quality</span>
+          <svg class="section-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="section-body" id="body-quality">
+          <div class="ctrl-group" style="margin-bottom:8px;">
+            <span class="ctrl-label">Subsampling Ratio &nbsp;<span id="subsample-ratio-label" style="color:var(--ci);font-family:'JetBrains Mono',monospace;">1 : 1</span></span>
+            <div class="slider-row" style="margin-bottom:8px;">
+              <input type="range" id="subsample-slider" min="1" max="20" step="1" value="1">
+              <span class="slider-val" id="subsample-pct" style="width:44px;">100%</span>
+            </div>
+            <button class="btn" id="btn-apply-subsample" style="opacity:0.4;pointer-events:none;">↻ Apply &amp; Reload</button>
+          </div>
+          <div class="stat-grid" style="margin-top:10px;">
+            <div class="stat-cell full">
+              <div class="stat-key">Total Points in File</div>
+              <div class="stat-val white" id="stat-total">—</div>
+            </div>
+            <div class="stat-cell full">
+              <div class="stat-key">Points Rendered</div>
+              <div class="stat-val" id="stat-points">—</div>
+            </div>
+          </div>
+
+          <div class="ctrl-group" style="margin-top:12px;">
+            <span class="ctrl-label">Point Size</span>
+            <div class="slider-row">
+              <input type="range" id="size-slider" min="0.1" max="6" step="0.1" value="0.2">
+              <span class="slider-val" id="size-val">0.2</span>
+            </div>
+          </div>
+          <div class="ctrl-group" style="margin-bottom:0;">
+            <span class="ctrl-label">Brightness</span>
+            <div class="slider-row">
+              <input type="range" id="bright-slider" min="0.3" max="2.5" step="0.1" value="1">
+              <span class="slider-val" id="bright-val">1.0</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- JET COLOR RANGE -->
-      <div class="sidebar-section" id="jet-range-section">
-        <div class="section-label">Jet Color Range</div>
-
-        <!-- Jet gradient preview with active-window overlay -->
-        <div class="jet-bar-wrap">
-          <div class="jet-bar"></div>
-          <div class="jet-bar-clip" id="clip-left"  style="left:0;width:0%"></div>
-          <div class="jet-bar-clip" id="clip-right" style="right:0;width:0%"></div>
-        </div>
-
-        <div class="range-row">
-          <div class="range-header">
-            <span class="range-key">Min</span>
-            <span class="range-val" id="range-min-val">0%</span>
-          </div>
-          <div class="slider-row">
-            <input type="range" id="range-min" min="0" max="98" step="1" value="0">
-          </div>
-        </div>
-
-        <div class="range-row">
-          <div class="range-header">
-            <span class="range-key">Max</span>
-            <span class="range-val" id="range-max-val">100%</span>
-          </div>
-          <div class="slider-row">
-            <input type="range" id="range-max" min="2" max="100" step="1" value="100">
-          </div>
-        </div>
-
-        <div class="range-abs-row">
-          <span id="range-abs-min">—</span>
-          <span id="range-abs-max">—</span>
-        </div>
-      </div>
-
-      <!-- DISPLAY -->
+      <!-- POINT CLOUD SETTINGS (was Color Mode + Jet Range + Display) -->
       <div class="sidebar-section">
-        <div class="section-label">Display</div>
-        <div class="ctrl-group">
-          <span class="ctrl-label">Point Size</span>
-          <div class="slider-row">
-            <input type="range" id="size-slider" min="0.5" max="6" step="0.5" value="2">
-            <span class="slider-val" id="size-val">2</span>
-          </div>
+        <div class="section-header" data-target="body-pcsettings">
+          <span class="section-label">🎨 Point Cloud Settings</span>
+          <svg class="section-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div class="ctrl-group">
-          <span class="ctrl-label">Brightness</span>
-          <div class="slider-row">
-            <input type="range" id="bright-slider" min="0.3" max="2.5" step="0.1" value="1">
-            <span class="slider-val" id="bright-val">1.0</span>
+        <div class="section-body" id="body-pcsettings">
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Color Mode</span>
+            <div class="mode-buttons">
+              <button class="mode-btn active" data-mode="elevation">Elevation</button>
+              <button class="mode-btn disabled" id="btn-rgb" data-mode="rgb">RGB</button>
+            </div>
           </div>
+
+          <div id="jet-range-section">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Jet Color Range</span>
+              <div class="jet-bar-wrap">
+                <div class="jet-bar"></div>
+                <div class="jet-bar-clip" id="clip-left"  style="left:0;width:0%"></div>
+                <div class="jet-bar-clip" id="clip-right" style="right:0;width:0%"></div>
+              </div>
+              <div class="range-row">
+                <div class="range-header">
+                  <span class="range-key">Min</span>
+                  <span class="range-val" id="range-min-val">0%</span>
+                </div>
+                <div class="slider-row">
+                  <input type="range" id="range-min" min="0" max="98" step="1" value="0">
+                </div>
+              </div>
+              <div class="range-row">
+                <div class="range-header">
+                  <span class="range-key">Max</span>
+                  <span class="range-val" id="range-max-val">100%</span>
+                </div>
+                <div class="slider-row">
+                  <input type="range" id="range-max" min="2" max="100" step="1" value="100">
+                </div>
+              </div>
+              <div class="range-abs-row">
+                <span id="range-abs-min">—</span>
+                <span id="range-abs-max">—</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- VERTICAL SLICE -->
+      <!-- PROFILE VIEW (was Slice Point Cloud) -->
       <div class="sidebar-section" id="slice-section">
-        <div class="section-label">Vertical Slice</div>
-
-        <!-- Axis selector -->
-        <div class="ctrl-group">
-          <div class="mode-buttons">
-            <button class="mode-btn active" data-axis="x">X Axis</button>
-            <button class="mode-btn" data-axis="y">Y Axis</button>
-          </div>
+        <div class="section-header" data-target="body-slice">
+          <span class="section-label">✂️ Profile View</span>
+          <svg class="section-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
+        <div class="section-body" id="body-slice">
 
-        <!-- Track preview -->
-        <div class="slice-track-wrap">
-          <div class="slice-track-bg"></div>
-          <div class="slice-track-fill" id="slice-track-fill"></div>
-        </div>
-
-        <div class="range-row">
-          <div class="range-header">
-            <span class="range-key">Near</span>
-            <span class="range-val" id="slice-near-val">0%</span>
+          <!-- Angle of cut -->
+          <div class="ctrl-group">
+            <div class="range-header" style="margin-bottom:6px;">
+              <span class="range-key">Cut Angle</span>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="slice-angle-input" min="0" max="179" step="1" value="0"
+                  style="width:48px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ci);padding:2px 5px;outline:none;text-align:right;">
+                <span style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace;">°</span>
+              </div>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="slice-angle" min="0" max="179" step="1" value="0">
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-family:'JetBrains Mono',monospace;margin-top:3px;">
+              <span>0°</span><span>45°</span><span>90°</span><span>135°</span><span>179°</span>
+            </div>
           </div>
-          <div class="slider-row">
-            <input type="range" id="slice-near" min="0" max="98" step="1" value="0">
-          </div>
-        </div>
 
-        <div class="range-row" style="margin-top:8px;">
-          <div class="range-header">
-            <span class="range-key">Far</span>
-            <span class="range-val" id="slice-far-val">100%</span>
+          <!-- Track fill preview (primary) -->
+          <div class="slice-track-wrap" style="margin-bottom:10px;">
+            <div class="slice-track-bg"></div>
+            <div class="slice-track-fill" id="slice-track-fill"></div>
           </div>
-          <div class="slider-row">
-            <input type="range" id="slice-far" min="2" max="100" step="1" value="100">
+
+          <!-- Near (primary) -->
+          <div class="range-row">
+            <div class="range-header" style="margin-bottom:5px;">
+              <span class="range-key">Near</span>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="slice-near-input" min="0" max="99.9" step="0.1" value="0.0"
+                  style="width:54px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ci);padding:2px 5px;outline:none;text-align:right;">
+                <span style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace;">%</span>
+              </div>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="slice-near" min="0" max="99.9" step="0.1" value="0">
+            </div>
           </div>
-        </div>
 
-        <div class="slice-abs-row">
-          <span id="slice-abs-near">—</span>
-          <span id="slice-abs-far">—</span>
-        </div>
-      </div>
+          <!-- Far (primary) -->
+          <div class="range-row" style="margin-top:8px;">
+            <div class="range-header" style="margin-bottom:5px;">
+              <span class="range-key">Far</span>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="slice-far-input" min="0.1" max="100" step="0.1" value="100.0"
+                  style="width:54px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ci);padding:2px 5px;outline:none;text-align:right;">
+                <span style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace;">%</span>
+              </div>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="slice-far" min="0.1" max="100" step="0.1" value="100">
+            </div>
+          </div>
 
-      <!-- CAMERA -->
-      <div class="sidebar-section">
-        <div class="section-label">Camera</div>
-        <div class="ctrl-group">
-          <div class="toggle-row">
-            <span class="toggle-label-text">Auto-Rotate</span>
+          <div class="slice-abs-row" style="margin-bottom:14px;">
+            <span id="slice-abs-near">—</span>
+            <span id="slice-abs-far">—</span>
+          </div>
+
+          <!-- ── SECOND CUT (perpendicular) ── -->
+          <div class="export-transp-row" style="margin-bottom:10px;">
+            <div>
+              <div class="export-transp-label">Second Cut</div>
+              <div class="export-transp-note">Perpendicular to first angle</div>
+            </div>
             <label class="toggle-switch">
-              <input type="checkbox" id="auto-rotate-toggle" checked>
+              <input type="checkbox" id="slice2-toggle">
               <div class="toggle-track"></div>
             </label>
           </div>
+
+          <div id="slice2-body" style="display:none;">
+            <!-- Track fill preview (secondary) -->
+            <div class="slice-track-wrap" style="margin-bottom:10px;">
+              <div class="slice-track-bg"></div>
+              <div class="slice-track-fill" id="slice2-track-fill"></div>
+            </div>
+
+            <!-- Near2 -->
+            <div class="range-row">
+              <div class="range-header" style="margin-bottom:5px;">
+                <span class="range-key">Near</span>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="number" id="slice2-near-input" min="0" max="99.9" step="0.1" value="0.0"
+                    style="width:54px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ci);padding:2px 5px;outline:none;text-align:right;">
+                  <span style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace;">%</span>
+                </div>
+              </div>
+              <div class="slider-row">
+                <input type="range" id="slice2-near" min="0" max="99.9" step="0.1" value="0">
+              </div>
+            </div>
+
+            <!-- Far2 -->
+            <div class="range-row" style="margin-top:8px;">
+              <div class="range-header" style="margin-bottom:5px;">
+                <span class="range-key">Far</span>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="number" id="slice2-far-input" min="0.1" max="100" step="0.1" value="100.0"
+                    style="width:54px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ci);padding:2px 5px;outline:none;text-align:right;">
+                  <span style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace;">%</span>
+                </div>
+              </div>
+              <div class="slider-row">
+                <input type="range" id="slice2-far" min="0.1" max="100" step="0.1" value="100">
+              </div>
+            </div>
+
+            <div class="slice-abs-row">
+              <span id="slice2-abs-near">—</span>
+              <span id="slice2-abs-far">—</span>
+            </div>
+          </div>
+
         </div>
-        <button class="btn" id="btn-reset">↺ Reset View</button>
-        <button class="btn" id="btn-top">⊞ Top View</button>
-        <button class="btn" id="btn-side">◫ Side View</button>
-        <button class="btn" id="btn-fit">⤢ Fit to View</button>
       </div>
 
       <!-- CLASS LEGEND -->
       <div class="sidebar-section" id="class-legend" style="display:none;">
-        <div class="section-label">Classes</div>
+        <div class="section-label" style="margin-bottom:8px;">Classes</div>
         <div id="class-legend-items"></div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="sidebar-section">
+        <div class="section-header" data-target="body-export">
+          <span class="section-label">💾 Export</span>
+          <svg class="section-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="section-body" id="body-export">
+
+          <!-- Show frame in viewer — TOP of export -->
+          <div class="export-transp-row" style="margin-bottom:10px;">
+            <div>
+              <div class="export-transp-label">Show Export Frame</div>
+              <div class="export-transp-note">Preview crop in viewer</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="export-frame-toggle">
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+
+          <span class="ctrl-label">Resolution</span>
+          <div class="res-buttons" style="grid-template-columns:1fr 1fr 1fr;">
+            <button class="res-btn active" data-w="1920" data-h="1080">1920×1080</button>
+            <button class="res-btn" data-w="2560" data-h="1440">2560×1440</button>
+            <button class="res-btn" data-w="3840" data-h="2160">3840×2160</button>
+            <button class="res-btn" data-w="4096" data-h="4096">4096×4096</button>
+            <button class="res-btn" data-w="5000" data-h="5000">5000×5000</button>
+            <button class="res-btn" data-w="6000" data-h="6000">6000×6000</button>
+          </div>
+
+          <span class="ctrl-label">Format</span>
+          <div class="export-format-row">
+            <button class="res-btn active" data-fmt="jpg">JPG</button>
+            <button class="res-btn" data-fmt="png">PNG</button>
+          </div>
+
+          <button class="btn-export" id="btn-export" disabled>⬇ Export Image</button>
+          <div class="export-feedback" id="export-feedback"></div>
+
+        </div>
+      </div>
+
+      <!-- VERSION -->
+      <div class="sidebar-section" style="border-bottom:none; padding-bottom:20px;">
+        <div class="version-badge">
+          <span class="version-label">WingtraLIDAR PointCLOUD</span>
+          <span class="version-val">V3.2</span>
+        </div>
       </div>
 
     </div>
@@ -481,11 +806,14 @@
           <circle cx="45" cy="90" r="2" fill="white" opacity="0.5"/>
         </svg>
         <div class="empty-title">No Point Cloud Loaded</div>
-        <div class="empty-sub">Upload a .LAS file to begin</div>
+        <div class="empty-sub">Drop a .LAS file here or use the sidebar</div>
       </div>
 
-      <div id="hud-tl"></div>
-      <div id="hud-br">LMB ROTATE &nbsp;·&nbsp; RMB PAN &nbsp;·&nbsp; SCROLL ZOOM</div>
+      <div id="export-frame">
+        <span id="export-frame-label"></span>
+      </div>
+
+      <div id="hud-br">LMB ROTATE &nbsp;·&nbsp; RMB / SHIFT+LMB PAN &nbsp;·&nbsp; SCROLL ZOOM</div>
 
       <div id="legend">
         <div class="legend-inner">
@@ -522,25 +850,30 @@ const CLASS_NAMES = {0:'Never Classified',1:'Unclassified',2:'Ground',3:'Low Veg
 const DEFAULT_CLASS_COLOR = [0.4,0.4,0.4];
 
 // ─────────────────────────────────────────────────
-//  LAS PARSER
+//  LAS PARSER  — streaming, chunk-based (handles files of any size)
 // ─────────────────────────────────────────────────
-function parseLAS(buffer) {
-  const view = new DataView(buffer);
-  const sig = String.fromCharCode(view.getUint8(0),view.getUint8(1),view.getUint8(2),view.getUint8(3));
+async function parseLASStreaming(file, customStep, onProgress) {
+  // ── 1. Read only the header (first 400 bytes covers all LAS versions) ──
+  const hdrBuf = await file.slice(0, 400).arrayBuffer();
+  const hdr = new DataView(hdrBuf);
+
+  const sig = String.fromCharCode(hdr.getUint8(0),hdr.getUint8(1),hdr.getUint8(2),hdr.getUint8(3));
   if (sig !== 'LASF') throw new Error('Invalid LAS file: missing LASF signature.');
 
-  const verMaj = view.getUint8(24), verMin = view.getUint8(25);
-  const offsetToData = view.getUint32(96, true);
-  const pointFormat  = view.getUint8(104);
-  const pointRecLen  = view.getUint16(105, true);
+  const verMaj = hdr.getUint8(24), verMin = hdr.getUint8(25);
+  const offsetToData = hdr.getUint32(96, true);
+  const pointFormat  = hdr.getUint8(104);
+  const pointRecLen  = hdr.getUint16(105, true);
 
-  let numPoints = view.getUint32(107, true);
-  if (numPoints === 0 && verMaj === 1 && verMin >= 4) {
-    try { numPoints = view.getUint32(247, true); } catch(e) {}
+  let numPoints = hdr.getUint32(107, true);
+  if (numPoints === 0 && verMaj >= 1 && verMin >= 4) {
+    try { numPoints = hdr.getUint32(247, true); } catch(e) {}
   }
+  if (!numPoints || !pointRecLen)
+    throw new Error('Unable to determine point count or record length.');
 
-  const xScale=view.getFloat64(131,true), yScale=view.getFloat64(139,true), zScale=view.getFloat64(147,true);
-  const xOff=view.getFloat64(155,true),   yOff=view.getFloat64(163,true),   zOff=view.getFloat64(171,true);
+  const xScale=hdr.getFloat64(131,true), yScale=hdr.getFloat64(139,true), zScale=hdr.getFloat64(147,true);
+  const xOff  =hdr.getFloat64(155,true), yOff  =hdr.getFloat64(163,true), zOff  =hdr.getFloat64(171,true);
 
   const hasRGB = [2,3,5,7,8].includes(pointFormat);
   let rgbOff = 0;
@@ -548,54 +881,81 @@ function parseLAS(buffer) {
   else if(pointFormat===3||pointFormat===5) rgbOff=28;
   else if(pointFormat===7||pointFormat===8) rgbOff=30;
 
+  // ── 2. Calculate step & pre-allocate output arrays ──
   const MAX_PTS = 4_000_000;
-  const step = numPoints > MAX_PTS ? Math.ceil(numPoints/MAX_PTS) : 1;
-  const count = Math.min(numPoints, MAX_PTS);
+  const autoStep = numPoints > MAX_PTS ? Math.ceil(numPoints / MAX_PTS) : 1;
+  const step = (customStep && customStep > 0) ? customStep : autoStep;
+  const maxOut = Math.ceil(numPoints / step);
 
-  const positions=new Float32Array(count*3);
-  const intensities=new Float32Array(count);
-  const colors=hasRGB ? new Float32Array(count*3) : null;
-  const classifications=new Uint8Array(count);
+  const positions      = new Float32Array(maxOut * 3);
+  const intensities    = new Float32Array(maxOut);
+  const colors         = hasRGB ? new Float32Array(maxOut * 3) : null;
+  const classifications= new Uint8Array(maxOut);
 
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,minZ=Infinity,maxZ=-Infinity;
   let minI=Infinity,maxI=-Infinity;
-  let idx=0;
+  let outIdx = 0;
 
-  for(let i=0;i<numPoints&&idx<count;i+=step){
-    const base=offsetToData+i*pointRecLen;
-    if(base+20>buffer.byteLength) break;
-    const x=view.getInt32(base,true)*xScale+xOff;
-    const y=view.getInt32(base+4,true)*yScale+yOff;
-    const z=view.getInt32(base+8,true)*zScale+zOff;
-    const intens=view.getUint16(base+12,true);
-    const cls=view.getUint8(base+15);
+  // ── 3. Read + parse in 64 MB chunks ──
+  const CHUNK_BYTES  = 64 * 1024 * 1024; // 64 MB per chunk
+  const chunkPts     = Math.max(1, Math.floor(CHUNK_BYTES / pointRecLen));
 
-    positions[idx*3]=x; positions[idx*3+1]=y; positions[idx*3+2]=z;
-    intensities[idx]=intens; classifications[idx]=cls;
+  for (let chunkStart = 0; chunkStart < numPoints && outIdx < maxOut; chunkStart += chunkPts) {
+    const chunkEnd  = Math.min(chunkStart + chunkPts, numPoints);
+    const byteStart = offsetToData + chunkStart * pointRecLen;
+    const byteEnd   = offsetToData + chunkEnd   * pointRecLen;
 
-    if(hasRGB&&colors&&base+rgbOff+6<=buffer.byteLength){
-      colors[idx*3]=view.getUint16(base+rgbOff,true)/65535;
-      colors[idx*3+1]=view.getUint16(base+rgbOff+2,true)/65535;
-      colors[idx*3+2]=view.getUint16(base+rgbOff+4,true)/65535;
+    const chunk = await file.slice(byteStart, byteEnd).arrayBuffer();
+    const view  = new DataView(chunk);
+    const ptsInChunk = Math.floor(chunk.byteLength / pointRecLen);
+
+    for (let i = 0; i < ptsInChunk; i++) {
+      const globalIdx = chunkStart + i;
+      if (globalIdx % step !== 0) continue;
+      if (outIdx >= maxOut) break;
+
+      const base = i * pointRecLen;
+      if (base + 20 > chunk.byteLength) break;
+
+      const x = view.getInt32(base,   true) * xScale + xOff;
+      const y = view.getInt32(base+4,  true) * yScale + yOff;
+      const z = view.getInt32(base+8,  true) * zScale + zOff;
+      const intens = view.getUint16(base+12, true);
+      const cls    = view.getUint8(base+15);
+
+      positions[outIdx*3]=x; positions[outIdx*3+1]=y; positions[outIdx*3+2]=z;
+      intensities[outIdx]=intens; classifications[outIdx]=cls;
+
+      if(hasRGB&&colors&&base+rgbOff+6<=chunk.byteLength){
+        colors[outIdx*3]  =view.getUint16(base+rgbOff,   true)/65535;
+        colors[outIdx*3+1]=view.getUint16(base+rgbOff+2, true)/65535;
+        colors[outIdx*3+2]=view.getUint16(base+rgbOff+4, true)/65535;
+      }
+
+      if(x<minX)minX=x; if(x>maxX)maxX=x;
+      if(y<minY)minY=y; if(y>maxY)maxY=y;
+      if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
+      if(intens<minI)minI=intens; if(intens>maxI)maxI=intens;
+      outIdx++;
     }
-    if(x<minX)minX=x; if(x>maxX)maxX=x;
-    if(y<minY)minY=y; if(y>maxY)maxY=y;
-    if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
-    if(intens<minI)minI=intens; if(intens>maxI)maxI=intens;
-    idx++;
+
+    if(onProgress) onProgress(chunkEnd / numPoints);
+    // Yield so the browser can repaint the progress bar
+    await new Promise(r => setTimeout(r, 0));
   }
 
+  // ── 4. Centre positions around centroid ──
   const cx=(minX+maxX)/2, cy=(minY+maxY)/2, cz=(minZ+maxZ)/2;
-  for(let i=0;i<idx;i++){
+  for(let i=0;i<outIdx;i++){
     positions[i*3]-=cx; positions[i*3+1]-=cy; positions[i*3+2]-=cz;
   }
 
   return {
-    positions:positions.subarray(0,idx*3),
-    intensities:intensities.subarray(0,idx),
-    colors:colors?colors.subarray(0,idx*3):null,
-    classifications:classifications.subarray(0,idx),
-    count:idx, version:`${verMaj}.${verMin}`, pointFormat, hasRGB,
+    positions:positions.subarray(0,outIdx*3),
+    intensities:intensities.subarray(0,outIdx),
+    colors:colors?colors.subarray(0,outIdx*3):null,
+    classifications:classifications.subarray(0,outIdx),
+    count:outIdx, version:`${verMaj}.${verMin}`, pointFormat, hasRGB,
     subsampled:step>1, originalCount:numPoints,
     bounds:{minX,maxX,minY,maxY,minZ,maxZ},
     centroid:{cx,cy,cz},
@@ -607,7 +967,7 @@ function parseLAS(buffer) {
 //  THREE.JS SETUP
 // ─────────────────────────────────────────────────
 const wrap=document.getElementById('canvas-wrap');
-const renderer=new THREE.WebGLRenderer({antialias:false});
+const renderer=new THREE.WebGLRenderer({antialias:false, preserveDrawingBuffer:true});
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x080809);
 renderer.localClippingEnabled=true;
@@ -620,14 +980,20 @@ camera.up.set(0,0,1);
 camera.lookAt(0,0,0);
 
 let points=null, pointData=null;
+let rawFile=null;         // retained for re-parsing on subsample change
+let manualStep=null;      // null = auto
 let colorMode='elevation';
 let brightness=1.0;
 let rangeMin=0, rangeMax=100;
-let autoRotate=true;
-let sliceAxis='x', sliceNear=0, sliceFar=100;
-// Two clipping planes: one from each side, creating a slab
-const clipPlaneNear = new THREE.Plane(new THREE.Vector3(1,0,0),  0); // keep x >= near
-const clipPlaneFar  = new THREE.Plane(new THREE.Vector3(-1,0,0), 0); // keep x <= far
+let autoRotate=false;
+let sliceAngleDeg=0, sliceNear=0, sliceFar=100;
+let slice2Enabled=false, slice2Near=0, slice2Far=100;
+// Primary cut: two planes along sliceAngle
+const clipPlaneNear  = new THREE.Plane(new THREE.Vector3(1,0,0),  0);
+const clipPlaneFar   = new THREE.Plane(new THREE.Vector3(-1,0,0), 0);
+// Secondary cut: perpendicular (sliceAngle + 90°)
+const clipPlane2Near = new THREE.Plane(new THREE.Vector3(0,1,0),  0);
+const clipPlane2Far  = new THREE.Plane(new THREE.Vector3(0,-1,0), 0);
 
 function resize(){
   const w=wrap.clientWidth, h=wrap.clientHeight;
@@ -641,7 +1007,7 @@ window.addEventListener('resize',resize);
 // ─────────────────────────────────────────────────
 //  ORBIT
 // ─────────────────────────────────────────────────
-const orbit={theta:0.5,phi:1.1,radius:300,target:new THREE.Vector3(),zoomSpeed:1.1,_down:false,_rightDown:false,_mx:0,_my:0};
+const orbit={theta:0.5,phi:1.1,radius:300,target:new THREE.Vector3(),zoomSpeed:1.1,_down:false,_rightDown:false,_shiftDown:false,_mx:0,_my:0};
 
 function updateCamera(){
   const sp=Math.sin(orbit.phi),cp=Math.cos(orbit.phi);
@@ -657,21 +1023,22 @@ updateCamera();
 
 const el=renderer.domElement;
 el.addEventListener('mousedown',e=>{
-  if(e.button===0)orbit._down=true;
-  if(e.button===2)orbit._rightDown=true;
+  if(e.button===0 && e.shiftKey){ orbit._shiftDown=true; }
+  else if(e.button===0){ orbit._down=true; }
+  if(e.button===2){ orbit._rightDown=true; }
   orbit._mx=e.clientX; orbit._my=e.clientY; e.preventDefault();
 });
 el.addEventListener('contextmenu',e=>e.preventDefault());
-window.addEventListener('mouseup',e=>{ if(e.button===0)orbit._down=false; if(e.button===2)orbit._rightDown=false; });
+window.addEventListener('mouseup',e=>{ if(e.button===0){ orbit._down=false; orbit._shiftDown=false; } if(e.button===2)orbit._rightDown=false; });
 window.addEventListener('mousemove',e=>{
   const dx=e.clientX-orbit._mx, dy=e.clientY-orbit._my;
   orbit._mx=e.clientX; orbit._my=e.clientY;
   if(orbit._down){
     orbit.theta-=dx*0.008;
-    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi+dy*0.008));
+    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi-dy*0.008));
     updateCamera();
   }
-  if(orbit._rightDown){
+  if(orbit._rightDown||orbit._shiftDown){
     const right=new THREE.Vector3();
     right.crossVectors(camera.getWorldDirection(new THREE.Vector3()),camera.up).normalize();
     const up2=camera.up.clone().normalize();
@@ -693,7 +1060,7 @@ el.addEventListener('touchmove',e=>{
   const t=Array.from(e.touches);
   if(t.length===1&&_touches.length===1){
     orbit.theta-=(t[0].clientX-_touches[0].clientX)*0.008;
-    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi+(t[0].clientY-_touches[0].clientY)*0.008));
+    orbit.phi=Math.max(0.05,Math.min(Math.PI-0.05,orbit.phi-(t[0].clientY-_touches[0].clientY)*0.008));
     updateCamera();
   } else if(t.length===2&&_touches.length===2){
     const d0=Math.hypot(_touches[0].clientX-_touches[1].clientX,_touches[0].clientY-_touches[1].clientY);
@@ -757,7 +1124,12 @@ function loadPointCloud(data){
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(data.positions,3));
   geo.setAttribute('color',new THREE.BufferAttribute(buildColors(data,colorMode,rangeMin,rangeMax,brightness),3));
-  const mat=new THREE.PointsMaterial({size:parseFloat(document.getElementById('size-slider').value),vertexColors:true,sizeAttenuation:true,clippingPlanes:[clipPlaneNear,clipPlaneFar]});
+  const mat = new THREE.PointsMaterial({
+    size: parseFloat(document.getElementById('size-slider').value)||0.2,
+    vertexColors: true,
+    sizeAttenuation: true,
+    clippingPlanes: [clipPlaneNear, clipPlaneFar, clipPlane2Near, clipPlane2Far],
+  });
   points=new THREE.Points(geo,mat); scene.add(points);
 
   const ext=Math.max(data.bounds.maxX-data.bounds.minX,data.bounds.maxY-data.bounds.minY,data.bounds.maxZ-data.bounds.minZ);
@@ -789,35 +1161,59 @@ function updateJetClips(){
 function updateSlicePlanes(){
   if(!pointData){ return; }
   const b=pointData.bounds, c=pointData.centroid;
-  let worldMin, worldMax;
-  if(sliceAxis==='x'){
-    worldMin=b.minX-c.cx; worldMax=b.maxX-c.cx;
-    clipPlaneNear.normal.set(1,0,0);
-    clipPlaneFar.normal.set(-1,0,0);
-  } else {
-    worldMin=b.minY-c.cy; worldMax=b.maxY-c.cy;
-    clipPlaneNear.normal.set(0,1,0);
-    clipPlaneFar.normal.set(0,-1,0);
-  }
-  const range=worldMax-worldMin;
-  const nearWorld=worldMin+(sliceNear/100)*range;
-  const farWorld =worldMin+(sliceFar /100)*range;
-  // Plane constant: dot(normal,point)+constant >= 0 to be visible
-  // Near plane (keep ≥ nearWorld): constant = -nearWorld
-  clipPlaneNear.constant = -nearWorld;
-  // Far  plane (keep ≤ farWorld):  constant =  farWorld
-  clipPlaneFar.constant  =  farWorld;
 
-  // Update track fill
+  // ── Primary cut (negate angle so slider-right = clockwise rotation) ──
+  const rad = -sliceAngleDeg * Math.PI / 180;
+  const nx = Math.cos(rad), ny = Math.sin(rad);
+
+  const corners1 = [
+    (b.minX-c.cx)*nx+(b.minY-c.cy)*ny,
+    (b.maxX-c.cx)*nx+(b.minY-c.cy)*ny,
+    (b.minX-c.cx)*nx+(b.maxY-c.cy)*ny,
+    (b.maxX-c.cx)*nx+(b.maxY-c.cy)*ny,
+  ];
+  const wMin1=Math.min(...corners1), wMax1=Math.max(...corners1), range1=wMax1-wMin1;
+  const eps1 = range1 * 0.0005;
+  const near1 = wMin1+(sliceNear/100)*range1 - eps1;
+  const far1  = wMin1+(sliceFar /100)*range1 + eps1;
+
+  clipPlaneNear.normal.set(nx,ny,0);   clipPlaneNear.constant=-near1;
+  clipPlaneFar.normal.set(-nx,-ny,0);  clipPlaneFar.constant=far1;
+
   const fill=document.getElementById('slice-track-fill');
-  fill.style.left=sliceNear+'%';
-  fill.style.width=(sliceFar-sliceNear)+'%';
+  fill.style.left=sliceNear+'%'; fill.style.width=(sliceFar-sliceNear)+'%';
+  document.getElementById('slice-abs-near').textContent=(wMin1+(sliceNear/100)*range1).toFixed(1)+'m';
+  document.getElementById('slice-abs-far').textContent=(wMin1+(sliceFar /100)*range1).toFixed(1)+'m';
 
-  // Absolute labels
-  const absNear=sliceAxis==='x'? (b.minX+(sliceNear/100)*(b.maxX-b.minX)) : (b.minY+(sliceNear/100)*(b.maxY-b.minY));
-  const absFar =sliceAxis==='x'? (b.minX+(sliceFar /100)*(b.maxX-b.minX)) : (b.minY+(sliceFar /100)*(b.maxY-b.minY));
-  document.getElementById('slice-abs-near').textContent=absNear.toFixed(1)+'m';
-  document.getElementById('slice-abs-far').textContent=absFar.toFixed(1)+'m';
+  // ── Secondary cut (perpendicular = angle + 90°) ──
+  const rad2 = rad + Math.PI/2;
+  const nx2 = Math.cos(rad2), ny2 = Math.sin(rad2);
+
+  if(slice2Enabled){
+    const corners2=[
+      (b.minX-c.cx)*nx2+(b.minY-c.cy)*ny2,
+      (b.maxX-c.cx)*nx2+(b.minY-c.cy)*ny2,
+      (b.minX-c.cx)*nx2+(b.maxY-c.cy)*ny2,
+      (b.maxX-c.cx)*nx2+(b.maxY-c.cy)*ny2,
+    ];
+    const wMin2=Math.min(...corners2), wMax2=Math.max(...corners2), range2=wMax2-wMin2;
+    const eps2 = range2 * 0.0005;
+    const near2=wMin2+(slice2Near/100)*range2 - eps2;
+    const far2 =wMin2+(slice2Far /100)*range2 + eps2;
+
+    clipPlane2Near.normal.set(nx2,ny2,0);    clipPlane2Near.constant=-near2;
+    clipPlane2Far.normal.set(-nx2,-ny2,0);   clipPlane2Far.constant=far2;
+
+    const fill2=document.getElementById('slice2-track-fill');
+    fill2.style.left=slice2Near+'%'; fill2.style.width=(slice2Far-slice2Near)+'%';
+    document.getElementById('slice2-abs-near').textContent=(wMin2+(slice2Near/100)*range2).toFixed(1)+'m';
+    document.getElementById('slice2-abs-far').textContent=(wMin2+(slice2Far /100)*range2).toFixed(1)+'m';
+  } else {
+    // Open — pass everything through
+    clipPlane2Near.normal.set(1,0,0); clipPlane2Near.constant=1e9;
+    clipPlane2Far.normal.set(-1,0,0); clipPlane2Far.constant=1e9;
+  }
+
 }
 function updateRangeAbsLabels(data){
   if(!data||colorMode==='rgb'||colorMode==='classification'){
@@ -879,18 +1275,12 @@ function updateClassLegend(data){
 // ─────────────────────────────────────────────────
 //  HUD
 // ─────────────────────────────────────────────────
-function updateHUD(data){
-  document.getElementById('hud-tl').innerHTML=[
-    `PTS &nbsp;${data.count.toLocaleString()}${data.subsampled?` <span style="color:rgba(244,111,41,0.5)">(1:${Math.ceil(data.originalCount/data.count)})</span>`:''}`,
-    `MODE ${colorMode.toUpperCase()}`,
-    `RANGE ${rangeMin}% → ${rangeMax}%`,
-  ].join('<br>');
-}
+function updateHUD(){ /* removed */ }
 
 // ─────────────────────────────────────────────────
 //  FILE HANDLING
 // ─────────────────────────────────────────────────
-function setStatus(state,label){ document.getElementById('status-dot').className=state; document.getElementById('status-label').textContent=label; }
+function setStatus(state,label){ /* status indicator removed in v1.1 */ }
 function setProgress(pct,label){ document.getElementById('progress-fill').style.width=pct+'%'; document.getElementById('progress-label').textContent=label; }
 
 async function handleFile(file){
@@ -900,15 +1290,25 @@ async function handleFile(file){
   setStatus('loading','PARSING'); setProgress(10,'Reading file…');
   await new Promise(r=>setTimeout(r,20));
   try{
-    const buffer=await file.arrayBuffer();
-    setProgress(40,'Parsing header…'); await new Promise(r=>setTimeout(r,20));
-    setProgress(60,'Reading points…'); await new Promise(r=>setTimeout(r,20));
-    const data=parseLAS(buffer); pointData=data;
-    setProgress(85,'Building scene…'); await new Promise(r=>setTimeout(r,20));
+    rawFile = file;
+    setProgress(10,'Reading header…'); await new Promise(r=>setTimeout(r,20));
+
+    const data = await parseLASStreaming(file, manualStep, pct=>{
+      setProgress(10 + Math.round(pct * 75), `Reading… ${Math.round(pct*100)}%`);
+    });
+    pointData = data;
+    setProgress(88,'Building scene…'); await new Promise(r=>setTimeout(r,20));
     loadPointCloud(data);
     document.getElementById('stat-points').textContent=data.count.toLocaleString()+(data.subsampled?' ↓':'');
-    document.getElementById('stat-z').textContent=`${data.bounds.minZ.toFixed(1)} → ${data.bounds.maxZ.toFixed(1)}`;
+    document.getElementById('stat-total').textContent=data.originalCount.toLocaleString();
     document.getElementById('btn-rgb').classList.toggle('disabled',!data.hasRGB);
+    // Sync subsample slider to actual step used
+    const usedStep = data.subsampled ? Math.round(data.originalCount/data.count) : 1;
+    const slider = document.getElementById('subsample-slider');
+    slider.value = Math.min(usedStep, parseInt(slider.max));
+    updateSubsampleUI(usedStep);
+    document.getElementById('btn-apply-subsample').style.opacity='0.4';
+    document.getElementById('btn-apply-subsample').style.pointerEvents='none';
     updateHUD(data);
     setProgress(100,'Done'); setStatus('active','ACTIVE');
     setTimeout(()=>document.getElementById('progress-wrap').style.display='none',800);
@@ -928,6 +1328,50 @@ fileInput.addEventListener('change',e=>{ const f=e.target.files[0]; if(f)handleF
 // ─────────────────────────────────────────────────
 //  UI CONTROLS
 // ─────────────────────────────────────────────────
+
+// Subsampling
+function updateSubsampleUI(step){
+  const pct = step<=1 ? '100%' : Math.round(100/step)+'%';
+  document.getElementById('subsample-ratio-label').textContent=`1 : ${step}`;
+  document.getElementById('subsample-pct').textContent=pct;
+}
+
+const subSlider=document.getElementById('subsample-slider');
+subSlider.addEventListener('input',()=>{
+  const step=parseInt(subSlider.value);
+  updateSubsampleUI(step);
+  const applyBtn=document.getElementById('btn-apply-subsample');
+  applyBtn.style.opacity='1';
+  applyBtn.style.pointerEvents='auto';
+});
+
+document.getElementById('btn-apply-subsample').addEventListener('click', async ()=>{
+  if(!rawFile) return;
+  const step=parseInt(subSlider.value);
+  manualStep=step;
+  document.getElementById('progress-wrap').style.display='block';
+  setStatus('loading','RESAMPLING'); setProgress(5,'Reading header…');
+  await new Promise(r=>setTimeout(r,20));
+  try{
+    const data = await parseLASStreaming(rawFile, manualStep, pct=>{
+      setProgress(5 + Math.round(pct * 80), `Reading… ${Math.round(pct*100)}%`);
+    });
+    pointData=data;
+    setProgress(75,'Building scene…'); await new Promise(r=>setTimeout(r,20));
+    loadPointCloud(data);
+    document.getElementById('stat-points').textContent=data.count.toLocaleString()+(data.subsampled?' ↓':'');
+    document.getElementById('stat-total').textContent=data.originalCount.toLocaleString();
+    document.getElementById('btn-rgb').classList.toggle('disabled',!data.hasRGB);
+    updateHUD(data);
+    setProgress(100,'Done'); setStatus('active','ACTIVE');
+    setTimeout(()=>document.getElementById('progress-wrap').style.display='none',800);
+    document.getElementById('btn-apply-subsample').style.opacity='0.4';
+    document.getElementById('btn-apply-subsample').style.pointerEvents='none';
+  } catch(err){
+    console.error(err); setStatus('','ERROR');
+    document.getElementById('progress-wrap').style.display='none';
+  }
+});
 
 // Color mode
 document.querySelectorAll('.mode-btn[data-mode]').forEach(btn=>{
@@ -971,7 +1415,7 @@ rMaxSlider.addEventListener('input',()=>{
 const sizeSlider=document.getElementById('size-slider');
 const sizeVal=document.getElementById('size-val');
 sizeSlider.addEventListener('input',()=>{
-  sizeVal.textContent=sizeSlider.value;
+  sizeVal.textContent=parseFloat(sizeSlider.value).toFixed(1);
   if(points) points.material.size=parseFloat(sizeSlider.value);
 });
 
@@ -984,35 +1428,93 @@ brightSlider.addEventListener('input',()=>{
   refreshColors();
 });
 
-// Vertical Slice – Axis
-document.querySelectorAll('.mode-btn[data-axis]').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.mode-btn[data-axis]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    sliceAxis=btn.dataset.axis;
-    updateSlicePlanes();
-  });
+// Profile View — Angle (slider + text input in sync)
+const sliceAngleSlider = document.getElementById('slice-angle');
+const sliceAngleInput  = document.getElementById('slice-angle-input');
+
+function setSliceAngle(v){
+  v = Math.max(0, Math.min(179, Math.round(v)));
+  sliceAngleDeg = v;
+  sliceAngleSlider.value = v;
+  sliceAngleInput.value  = v;
+  updateSlicePlanes();
+}
+sliceAngleSlider.addEventListener('input', ()=> setSliceAngle(parseInt(sliceAngleSlider.value)));
+sliceAngleInput.addEventListener('input',  ()=>{ const v=parseInt(sliceAngleInput.value); if(!isNaN(v)) setSliceAngle(v); });
+sliceAngleInput.addEventListener('blur',   ()=>{ sliceAngleInput.value=sliceAngleDeg; });
+
+// Helper: sync slider + input together
+function setSliceNear(v){
+  v = Math.max(0, Math.min(sliceFar - 0.1, parseFloat(v.toFixed(1))));
+  sliceNear = v;
+  document.getElementById('slice-near').value = v;
+  document.getElementById('slice-near-input').value = v.toFixed(1);
+  updateSlicePlanes();
+}
+function setSliceFar(v){
+  v = Math.max(sliceNear + 0.1, Math.min(100, parseFloat(v.toFixed(1))));
+  sliceFar = v;
+  document.getElementById('slice-far').value = v;
+  document.getElementById('slice-far-input').value = v.toFixed(1);
+  updateSlicePlanes();
+}
+
+// Near slider
+document.getElementById('slice-near').addEventListener('input', e=>{
+  setSliceNear(parseFloat(e.target.value));
+});
+// Near text input
+document.getElementById('slice-near-input').addEventListener('input', e=>{
+  const v = parseFloat(e.target.value);
+  if(!isNaN(v)) setSliceNear(v);
+});
+document.getElementById('slice-near-input').addEventListener('blur', e=>{
+  e.target.value = sliceNear.toFixed(1);
 });
 
-// Vertical Slice – Near
-const sliceNearSlider=document.getElementById('slice-near');
-const sliceNearVal=document.getElementById('slice-near-val');
-sliceNearSlider.addEventListener('input',()=>{
-  sliceNear=parseInt(sliceNearSlider.value);
-  if(sliceNear>=sliceFar-2){ sliceNear=sliceFar-2; sliceNearSlider.value=sliceNear; }
-  sliceNearVal.textContent=sliceNear+'%';
+// Far slider
+document.getElementById('slice-far').addEventListener('input', e=>{
+  setSliceFar(parseFloat(e.target.value));
+});
+// Far text input
+document.getElementById('slice-far-input').addEventListener('input', e=>{
+  const v = parseFloat(e.target.value);
+  if(!isNaN(v)) setSliceFar(v);
+});
+document.getElementById('slice-far-input').addEventListener('blur', e=>{
+  e.target.value = sliceFar.toFixed(1);
+});
+
+// ── Second Cut toggle ──
+document.getElementById('slice2-toggle').addEventListener('change', e=>{
+  slice2Enabled = e.target.checked;
+  document.getElementById('slice2-body').style.display = slice2Enabled ? 'block' : 'none';
   updateSlicePlanes();
 });
 
-// Vertical Slice – Far
-const sliceFarSlider=document.getElementById('slice-far');
-const sliceFarVal=document.getElementById('slice-far-val');
-sliceFarSlider.addEventListener('input',()=>{
-  sliceFar=parseInt(sliceFarSlider.value);
-  if(sliceFar<=sliceNear+2){ sliceFar=sliceNear+2; sliceFarSlider.value=sliceFar; }
-  sliceFarVal.textContent=sliceFar+'%';
+// Second cut helpers
+function setSlice2Near(v){
+  v=Math.max(0,Math.min(slice2Far-0.1,parseFloat(v.toFixed(1))));
+  slice2Near=v;
+  document.getElementById('slice2-near').value=v;
+  document.getElementById('slice2-near-input').value=v.toFixed(1);
   updateSlicePlanes();
-});
+}
+function setSlice2Far(v){
+  v=Math.max(slice2Near+0.1,Math.min(100,parseFloat(v.toFixed(1))));
+  slice2Far=v;
+  document.getElementById('slice2-far').value=v;
+  document.getElementById('slice2-far-input').value=v.toFixed(1);
+  updateSlicePlanes();
+}
+
+document.getElementById('slice2-near').addEventListener('input',e=>setSlice2Near(parseFloat(e.target.value)));
+document.getElementById('slice2-near-input').addEventListener('input',e=>{ const v=parseFloat(e.target.value); if(!isNaN(v)) setSlice2Near(v); });
+document.getElementById('slice2-near-input').addEventListener('blur',e=>{ e.target.value=slice2Near.toFixed(1); });
+
+document.getElementById('slice2-far').addEventListener('input',e=>setSlice2Far(parseFloat(e.target.value)));
+document.getElementById('slice2-far-input').addEventListener('input',e=>{ const v=parseFloat(e.target.value); if(!isNaN(v)) setSlice2Far(v); });
+document.getElementById('slice2-far-input').addEventListener('blur',e=>{ e.target.value=slice2Far.toFixed(1); });
 
 // Auto-Rotate
 document.getElementById('auto-rotate-toggle').addEventListener('change',e=>{ autoRotate=e.target.checked; });
@@ -1024,27 +1526,203 @@ document.getElementById('btn-reset').addEventListener('click',()=>{
   orbit.radius=ext*1.2; orbit.target.set(0,0,0); orbit.theta=0.5; orbit.phi=1.1; updateCamera();
 });
 
+// Viewer-level drag and drop
+const canvasWrap = document.getElementById('canvas-wrap');
+canvasWrap.addEventListener('dragover', e=>{ e.preventDefault(); canvasWrap.classList.add('drag-active'); });
+canvasWrap.addEventListener('dragleave', e=>{ if(!canvasWrap.contains(e.relatedTarget)) canvasWrap.classList.remove('drag-active'); });
+canvasWrap.addEventListener('drop', e=>{
+  e.preventDefault(); canvasWrap.classList.remove('drag-active');
+  const f = e.dataTransfer.files[0]; if(f) handleFile(f);
+});
+
 // Top View
 document.getElementById('btn-top').addEventListener('click',()=>{
   if(!pointData) return;
   orbit.phi=0.05; orbit.theta=0; updateCamera();
 });
 
-// Side View
-document.getElementById('btn-side').addEventListener('click',()=>{
+// Back View
+document.getElementById('btn-back').addEventListener('click',()=>{
   if(!pointData) return;
-  orbit.phi=Math.PI/2; orbit.theta=0; updateCamera();
+  orbit.phi=Math.PI/2; orbit.theta=Math.PI; updateCamera();
 });
 
-// Fit to View
-document.getElementById('btn-fit').addEventListener('click',()=>{
+// Side Left
+document.getElementById('btn-side-left').addEventListener('click',()=>{
   if(!pointData) return;
-  const b=pointData.bounds;
-  const ext=Math.max(b.maxX-b.minX, b.maxY-b.minY, b.maxZ-b.minZ);
-  const fovRad=camera.fov*(Math.PI/180);
-  orbit.radius=(ext/2)/Math.tan(fovRad/2)*1.5;
-  orbit.target.set(0,0,0);
-  updateCamera();
+  orbit.phi=Math.PI/2; orbit.theta=-Math.PI/2; updateCamera();
+});
+
+// Side Right
+document.getElementById('btn-side-right').addEventListener('click',()=>{
+  if(!pointData) return;
+  orbit.phi=Math.PI/2; orbit.theta=Math.PI/2; updateCamera();
+});
+
+// ─────────────────────────────────────────────────
+//  EXPORT
+// ─────────────────────────────────────────────────
+(function(){
+  let exportW=1920, exportH=1080, exportFmt='jpg', showFrame=false;
+
+  const wInput = null, hInput = null; // custom inputs removed
+
+  // ── Preset resolution buttons ──
+  document.querySelectorAll('.res-btn[data-w]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.res-btn[data-w]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      exportW = parseInt(btn.dataset.w);
+      exportH = parseInt(btn.dataset.h);
+      if(showFrame) updateFrame();
+    });
+  });
+  const feedback      = document.getElementById('export-feedback');
+  const exportBtn     = document.getElementById('btn-export');
+  const frameToggle   = document.getElementById('export-frame-toggle');
+  const frameEl       = document.getElementById('export-frame');
+  const frameLabel    = document.getElementById('export-frame-label');
+
+  // ── Frame overlay ──
+  function updateFrame(){
+    if(!showFrame){ frameEl.classList.remove('visible'); return; }
+    const vw = wrap.clientWidth, vh = wrap.clientHeight;
+    const aspect = exportW / exportH;
+    const viewAspect = vw / vh;
+    let fw, fh;
+    if(aspect > viewAspect){ fw=vw; fh=vw/aspect; }
+    else                   { fh=vh; fw=vh*aspect; }
+    const fl=(vw-fw)/2, ft=(vh-fh)/2;
+    frameEl.style.left   = fl+'px';
+    frameEl.style.top    = ft+'px';
+    frameEl.style.width  = fw+'px';
+    frameEl.style.height = fh+'px';
+    frameLabel.textContent = `${exportW} × ${exportH}`;
+    frameEl.classList.add('visible');
+  }
+
+  window.addEventListener('resize', ()=>{ if(showFrame) updateFrame(); });
+
+  frameToggle.addEventListener('change',()=>{
+    showFrame = frameToggle.checked;
+    updateFrame();
+  });
+
+  // ── Get current bg hex ──
+  function getCurrentBgHex(){
+    return '080809'; // default dark background
+  }
+
+  // ── Enable export button once a file is loaded ──
+  const statPts = document.getElementById('stat-points');
+  new MutationObserver(()=>{ exportBtn.disabled=false; })
+    .observe(statPts,{childList:true,characterData:true,subtree:true});
+
+  // ── Format buttons ──
+  document.querySelectorAll('.res-btn[data-fmt]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.res-btn[data-fmt]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      exportFmt = btn.dataset.fmt;
+    });
+  });
+
+  // ── Export button ──
+  exportBtn.addEventListener('click', ()=>{
+    if(!pointData) return;
+    feedback.textContent = 'Rendering…';
+    exportBtn.disabled = true;
+
+    setTimeout(()=>{
+      const origAspect = camera.aspect;
+      const origFov    = camera.fov;
+      const origDPR    = renderer.getPixelRatio();
+      let exported = false;
+
+      try {
+        const vw = wrap.clientWidth, vh = wrap.clientHeight;
+        const viewAspect   = vw / vh;
+        const exportAspect = exportW / exportH;
+
+        let frameHeightRatio;
+        if(exportAspect > viewAspect){
+          frameHeightRatio = viewAspect / exportAspect;
+        } else {
+          frameHeightRatio = 1;
+        }
+
+        const origFovRad   = origFov * Math.PI / 180;
+        const exportFovRad = 2 * Math.atan(Math.tan(origFovRad / 2) * frameHeightRatio);
+        const exportFovDeg = exportFovRad * 180 / Math.PI;
+
+        renderer.setPixelRatio(1);
+        renderer.setSize(exportW, exportH, false);
+        camera.fov    = exportFovDeg;
+        camera.aspect = exportAspect;
+        camera.updateProjectionMatrix();
+
+        const bgHex = getCurrentBgHex();
+        const bgR=parseInt(bgHex.slice(0,2),16)/255;
+        const bgG=parseInt(bgHex.slice(2,4),16)/255;
+        const bgB=parseInt(bgHex.slice(4,6),16)/255;
+        renderer.setClearColor(new THREE.Color(bgR,bgG,bgB), 1);
+        renderer.render(scene, camera);
+
+        const mimeType = exportFmt==='png' ? 'image/png' : 'image/jpeg';
+        const quality  = exportFmt==='jpg' ? 0.95 : undefined;
+        const dataURL  = renderer.domElement.toDataURL(mimeType, quality);
+
+        const ext  = exportFmt==='png' ? 'png' : 'jpg';
+        const name = `wingtra_lidar_${exportW}x${exportH}.${ext}`;
+        const byteStr = atob(dataURL.split(',')[1]);
+        const ab = new ArrayBuffer(byteStr.length);
+        const ia = new Uint8Array(ab);
+        for(let i=0;i<byteStr.length;i++) ia[i]=byteStr.charCodeAt(i);
+        const blob = new Blob([ab], {type: mimeType});
+        const objURL = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objURL; a.download = name;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(()=>URL.revokeObjectURL(objURL), 5000);
+
+        feedback.textContent = `✓ Saved as ${name}`;
+        setTimeout(()=>feedback.textContent='', 4000);
+        exported = true;
+
+      } catch(err){
+        console.error(err);
+        feedback.textContent = 'Export failed — see console';
+      } finally {
+        // ALWAYS restore renderer and camera, whether export succeeded or not
+        renderer.setPixelRatio(origDPR);
+        renderer.setSize(wrap.clientWidth, wrap.clientHeight, true);
+        camera.fov    = origFov;
+        camera.aspect = origAspect;
+        camera.updateProjectionMatrix();
+        const restHex = getCurrentBgHex();
+        const restR=parseInt(restHex.slice(0,2),16)/255;
+        const restG=parseInt(restHex.slice(2,4),16)/255;
+        const restB=parseInt(restHex.slice(4,6),16)/255;
+        renderer.setClearColor(new THREE.Color(restR,restG,restB), 1);
+      }
+      exportBtn.disabled = false;
+    }, 40);
+  });
+})();
+
+// ─────────────────────────────────────────────────
+//  COLLAPSIBLE SECTIONS
+// ─────────────────────────────────────────────────
+//  COLLAPSIBLE SECTIONS
+// ─────────────────────────────────────────────────
+document.querySelectorAll('.section-header').forEach(header=>{
+  header.addEventListener('click',()=>{
+    const bodyId = header.dataset.target;
+    const body   = document.getElementById(bodyId);
+    const chev   = header.querySelector('.section-chevron');
+    const open   = body.classList.toggle('open');
+    chev.classList.toggle('open', open);
+  });
 });
 
 // ─────────────────────────────────────────────────
